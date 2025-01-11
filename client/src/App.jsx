@@ -3,7 +3,7 @@
 function App() {
   return (
     <>
-      <h1>Welcome to WChat 🤗</h1>
+      <h1>Welcome to Rizz 🤗</h1>
     </>
   )
 }
