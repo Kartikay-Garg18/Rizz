@@ -1,9 +1,9 @@
-## **Project Name: StreamChat**
+## **Project Name: Word**
 
 ---
 
 ### **Overview:**
-**StreamChat** is a real-time chat application built using the MERN stack. It provides seamless real-time messaging, user authentication, profile updates, and a responsive design. Features include online/offline status, cloud-based media storage, and chat persistence, making it a robust platform for communication.
+**Word** is a real-time chat application built using the MERN stack. It provides seamless real-time messaging, user authentication, profile updates, and a responsive design. Features include online/offline status, cloud-based media storage, and chat persistence, making it a robust platform for communication.
 
 ---
 
@@ -76,26 +76,26 @@ To develop a scalable, user-friendly, and interactive real-time chat application
 ---
 
 ## **Workflow Overview**
-This section illustrates the complete workflow for users and admins in the **StreamChat** application, covering all major functionalities such as real-time messaging, user authentication, profile updates, and chat persistence.
+This section illustrates the complete workflow for users and admins in the **Word** application, covering all major functionalities such as real-time messaging, user authentication, profile updates, and chat persistence.
 
 ---
 
 ### **Flowchart**
-This section provides a visual representation of the overall flow of the **StreamChat** application, including user registration, login, real-time messaging, profile updates, and managing chat persistence.
+This section provides a visual representation of the overall flow of the **Word** application, including user registration, login, real-time messaging, profile updates, and managing chat persistence.
 ![diagram-export-12-12-2024-10_22_23-AM](https://github.com/user-attachments/assets/835194ab-c1bd-4788-a59b-395ece914e5e)
 
 
 ---
 
 ### **System Architecture**
-This section demonstrates the high-level architecture of the **StreamChat** app, showcasing the interaction between the frontend, backend, database, and external services like Cloudinary for media storage and Socket.IO for real-time messaging.
+This section demonstrates the high-level architecture of the **Word** app, showcasing the interaction between the frontend, backend, database, and external services like Cloudinary for media storage and Socket.IO for real-time messaging.
 ![diagram-export-12-12-2024-11_47_57-AM](https://github.com/user-attachments/assets/f83ee835-69c9-4c57-b28d-8992d714a7f6)
 
 
 ---
 
 ### **Sequence Diagram**
-This section presents the sequence of interactions between the different components of the **StreamChat** application, including users, the backend system, real-time chat handling, and cloud-based media storage.
+This section presents the sequence of interactions between the different components of the **Word** application, including users, the backend system, real-time chat handling, and cloud-based media storage.
 ![diagram-export-12-12-2024-10_26_46-AM](https://github.com/user-attachments/assets/f46125ee-8699-4f59-bafa-c4e2a384e6d4)
 
 
