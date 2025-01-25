@@ -8,6 +8,7 @@ import Signup from './components/Signup.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
 import LoginForm from './components/Login/LoginForm.jsx'
 import Home from './components/Home.jsx'
+import Forgot from './components/Forgot.jsx'
 
 const router = createBrowserRouter([{
   path:'/',
@@ -27,6 +28,12 @@ const router = createBrowserRouter([{
         <LoginForm />
         </AuthLayout>)
     }, {
+      path: '/forgot',
+      element: (<AuthLayout authentication={false}>
+        <Forgot />
+        </AuthLayout>)
+    },
+    {
       path: '/*',
       element: <div>404</div>
     }

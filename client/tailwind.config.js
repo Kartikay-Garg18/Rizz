@@ -14,7 +14,11 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'pop': ["Poppins", "sans-serif"],
+      }
+    },
   },
   plugins: [addVariablesForColors],
 };

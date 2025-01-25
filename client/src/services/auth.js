@@ -98,4 +98,41 @@ const googleLogin = async (code) => {
         console.error(error);
     }
 }
-export {createAccount,login, getUser, googleLogin}
+
+const forgotPassword = async (data) => {
+    try {
+        const res = await axios.post(`${API_URI}/auth/forgot`, {
+            email : data.email
+        });
+        return res.data.data;
+    } catch (error) {
+        return error;
+    }
+}
+
+const resetPassword = async (data) => {
+    try {
+        const res = await axios.patch(`${API_URI}/auth/forgot`, {
+            email : data.email,
+            password : data.password
+        });
+        
+        return res.data;
+
+    } catch (error) {
+        toast.error(error.response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+            });
+        // console.log(e);
+        throw new Error('Login failed');
+    }
+}
+export {createAccount,login, getUser, googleLogin, forgotPassword, resetPassword}

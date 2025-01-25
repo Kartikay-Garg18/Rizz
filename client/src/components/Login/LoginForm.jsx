@@ -54,7 +54,7 @@ const LoginForm = () => {
       <button type="submit"
       className='border px-4 py-2 bg-transparent mt-5 text-white font-semibold w-[80%] rounded-3xl'>Sign In</button>
 
-      <span className='cursor-pointer font-bold' onClick={() => {}}>Forgot Password?</span>
+      <span className='cursor-pointer font-bold' onClick={() => {navigate('/forgot')}}>Forgot Password?</span>
 
       <div className='flex justify-center items-center font-sans gap-2'>
         <p>Don&#8217;t have an account?</p>
