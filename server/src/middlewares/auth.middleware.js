@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { GoogleUser } from "../models/googleuser.model.js";
 import jwt from 'jsonwebtoken';
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asynchandler.js";
@@ -12,7 +13,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     
         const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const user = await User.findById(decodeToken._id).select('-password -refreshToken');
+        const user = await User.findById(decodeToken._id).select('-password -refreshToken') || await GoogleUser.findById(decodeToken._id).select('-refreshToken');
 
         if(!user){
             throw new ApiError(401, 'Unauthorized');

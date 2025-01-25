@@ -30,6 +30,6 @@ app.use(session({
 
 // app.use(cookieParser());
 
-app.use('/', userRouter);
+app.use('/auth', userRouter);
 
 export default app;

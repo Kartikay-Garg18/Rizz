@@ -1,6 +1,6 @@
 import React from 'react'
 import SignUpForm from './SignUp/SignUpForm'
-import { LampDemo } from './SignUp/Lamp'
+import { Lamp } from './SignUp/Lamp'
 
 const Signup = () => {
 
@@ -10,7 +10,7 @@ const Signup = () => {
                 <SignUpForm></SignUpForm>
             </div>
             <div className='w-[60%]'>
-                <LampDemo></LampDemo>
+                <Lamp></Lamp>
             </div>
         
     </div>

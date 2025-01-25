@@ -3,9 +3,11 @@ import User from '../../assets/User.svg'
 import Email from '../../assets/Email.svg'
 import Lock from '../../assets/Lock.svg'
 import {useForm} from 'react-hook-form'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createAccount } from '../../services/auth'
 import { toast, Bounce } from 'react-toastify'
+import GoogleLogin from '../GoogleLogin'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const SignUpForm = () => {
   const navigate = useNavigate()
@@ -76,8 +78,14 @@ const SignUpForm = () => {
           className='border border-gray-600 px-4 py-2 text-black rounded-full w-[80%] font-semibold text-lg border-opacity-40 font-pop'>Sign Up</button>
 
           <div className='flex justify-center items-center font-pop gap-2'>
-            <p>Don&#8217;t have an account?</p>
-            <span className='cursor-pointer font-pop font-medium' onClick={() => setToggle(!toggle)}>Sign In</span>
+            <p>Already have an account?</p>
+            <span className='cursor-pointer font-pop font-medium' onClick={() => navigate('/login')}>Sign In</span>
+          </div>
+
+          <div className='flex justify-center items-center font-pop gap-2'>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}>
+              <GoogleLogin />
+            </GoogleOAuthProvider>
           </div>
         </form>
     </>

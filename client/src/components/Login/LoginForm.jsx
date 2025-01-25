@@ -7,13 +7,15 @@ import { login } from '../../services/auth'
 import bg from '../../assets/wallpaper.jpeg'
 import Email from '../../assets/Email.svg'
 import Lock from '../../assets/Lock.svg'
-import { motion } from 'framer-motion'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import GoogleLogin from '../GoogleLogin'
 
 const LoginForm = () => {
   const gradient = true;
   const blur = true;
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const loginUser = async (data) => {
     try{
       const user = await login(data);
@@ -31,7 +33,7 @@ const LoginForm = () => {
   return (
     <div className='pl-16 flex justify-start items-center w-screen h-screen bg-opacity-60' style={{ backgroundImage: `url(${bg})`, backgroundSize: '130vw 120vh', backgroundPosition: 'center'}}>
     <form method="POST" 
-    className='w-[25%] border flex flex-col gap-4 justify-center items-center p-7 rounded-xl shadow-xl bg-transparent backdrop-blur-sm m-11'
+    className='w-[25%] border bg-green-300 flex flex-col gap-4 justify-center items-center p-7 rounded-xl shadow-xl bg-transparent backdrop-blur-sm m-11'
     onSubmit={handleSubmit(loginUser)}
     >
       
@@ -54,10 +56,15 @@ const LoginForm = () => {
 
       <span className='cursor-pointer font-bold' onClick={() => {}}>Forgot Password?</span>
 
-      {/* <div className='flex justify-center items-center font-sans gap-2'>
+      <div className='flex justify-center items-center font-sans gap-2'>
         <p>Don&#8217;t have an account?</p>
-        <span className='cursor-pointer font-bold' onClick={() => settoggle(!toggle)}>Sign Up here</span>
-        </div> */}
+        <span className='cursor-pointer font-bold' onClick={() => {navigate('/signup')}}>Sign Up here</span>
+        </div>
+        <div className='flex justify-center items-center font-pop gap-2'>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}>
+              <GoogleLogin />
+            </GoogleOAuthProvider>
+          </div>
     </form>
         </div>
     

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { cn } from "../../utils/utils";
 
 
-export function LampDemo() {
+export function Lamp() {
   const [idx, setIdx] = useState(0);
       const words = useMemo(() => ['Game', 'Chat', 'Vibe', 'Connection', 'Experience'], []);
       useEffect(()=>{

@@ -14,7 +14,7 @@ const setRefreshToken = (token) => {
 
 const createAccount = async (data) => {
     try {
-        await axios.post(`${API_URI}/register`, {
+        await axios.post(`${API_URI}/auth/register`, {
             username : data.username,
             email : data.email,
             password : data.password
@@ -38,7 +38,7 @@ const createAccount = async (data) => {
 
 const login = async (data) => {
     try{
-        const user = await axios.post(`${API_URI}/login`, {
+        const user = await axios.post(`${API_URI}/auth/login`, {
             email : data.email,
             password : data.password
         })
@@ -72,7 +72,7 @@ const login = async (data) => {
 const getUser = async () => {
     try{
         const accessToken = Cookies.get('accessToken');
-        const user = await axios.get(`${API_URI}/user`, {
+        const user = await axios.get(`${API_URI}/auth/user`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -82,4 +82,20 @@ const getUser = async () => {
         throw new Error('User not found');
     }
 }
-export {createAccount,login, getUser}
+
+const googleLogin = async (code) => {
+    try {
+        const user = await axios.post(`${API_URI}/auth/google?code=${code}`);
+        if(!user){
+            throw new Error('Login failed');
+        }
+
+        setAccessToken(user.data.data.accessToken);
+        setRefreshToken(user.data.data.refreshToken);
+        
+        return user;
+    } catch (error) {
+        console.error(error);
+    }
+}
+export {createAccount,login, getUser, googleLogin}

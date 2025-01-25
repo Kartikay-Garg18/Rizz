@@ -8,7 +8,6 @@ import Signup from './components/Signup.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
 import LoginForm from './components/Login/LoginForm.jsx'
 import Home from './components/Home.jsx'
-// import { LampDemo } from './components/ui/Lamp.jsx'
 
 const router = createBrowserRouter([{
   path:'/',
@@ -27,12 +26,15 @@ const router = createBrowserRouter([{
       element: (<AuthLayout authentication={false}>
         <LoginForm />
         </AuthLayout>)
+    }, {
+      path: '/*',
+      element: <div>404</div>
     }
   ]
 }])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <RouterProvider router={router}/>
+      <RouterProvider router={router}/>
   </Provider>,
 )
