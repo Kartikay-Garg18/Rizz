@@ -87,7 +87,7 @@ const OtpInput = ({email, otp, expiry, setShowOtp, setShowPassword}) => {
         }
         </div>
         <div>
-            <button className='w-[85%] border border-black bg-black text-white rounded-lg py-3 mb-8'
+            <button className='w-[85%] border border-black bg-slate-950 text-white rounded-lg py-3 mb-8'
             onClick={checkOtp}
             >Verify OTP</button>
         </div>

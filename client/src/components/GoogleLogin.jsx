@@ -25,7 +25,7 @@ const GoogleLogin = () => {
     })
   return (
     <div>
-        <button onClick={googleLogin} className='flex justify-center items-center gap-2 border-black border'>
+        <button onClick={googleLogin} className='flex justify-center items-center gap-2 border-black border border-opacity-20'>
             <img src={Google} alt="" className='w-7 pl-2'/>
             <span className='py-2 bg-blue-500 px-2 text-white font-semibold'>Sign in with Google</span>
         </button>
