@@ -3,8 +3,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import userRouter from './routes/user.routes.js'
 import cors from 'cors'
-
-const app = express();
+import {app} from './utils/socket.js'
 
 const corsOptions = {
     origin: process.env.CORS_ORIGIN,
