@@ -18,7 +18,6 @@ const userSchema= new mongoose.Schema(
             type: String,
             required: true,
             min: [8, 'Password must be at least 8 characters long'],
-            max: 24,
         },
         profilePictureUrl: {
             type: String,
@@ -37,7 +36,10 @@ userSchema.pre('save', async function(next){
         next();
     }
     
-    this.password= await bcrypt.hash(this.password, 10);
+    const isHashed = /^\$2[ayb]\$.{56}$/.test(this.password);
+    if (!isHashed) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
     next();
 });
 
