@@ -36,9 +36,7 @@ const createUser = asyncHandler(async (req, res) => {
       .json(new ApiResponse(400, "", "User with same email address exists"));
   }
 
-  const hashedpassword = await bcrypt.hash(password, 10);
-
-  const user = await User.create({ username, email, password: hashedpassword });
+  const user = await User.create({ username, email, password });
 
   if (!user) {
     return res

@@ -36,10 +36,7 @@ userSchema.pre('save', async function(next){
         next();
     }
     
-    const isHashed = /^\$2[ayb]\$.{56}$/.test(this.password);
-    if (!isHashed) {
-        this.password = await bcrypt.hash(this.password, 10);
-    }
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
