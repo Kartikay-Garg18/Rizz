@@ -6,9 +6,10 @@ import { store } from './store/store.js'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Signup from './components/Signup.jsx'
 import AuthLayout from './components/AuthLayout.jsx'
-import LoginForm from './components/Login/LoginForm.jsx'
+import Login from './components/Login.jsx'
 import Home from './components/Home.jsx'
 import Forgot from './components/Forgot.jsx'
+import Chat from './components/Chat.jsx'
 
 const router = createBrowserRouter([{
   path:'/',
@@ -25,12 +26,17 @@ const router = createBrowserRouter([{
     }, {
       path: '/login',
       element: (<AuthLayout authentication={false}>
-        <LoginForm />
+        <Login />
         </AuthLayout>)
     }, {
       path: '/forgot',
       element: (<AuthLayout authentication={false}>
         <Forgot />
+        </AuthLayout>)
+    },{
+      path: '/chat',
+      element:(<AuthLayout authentication={false}>
+        <Chat />
         </AuthLayout>)
     },
     {

@@ -32,8 +32,7 @@ const LoginForm = () => {
 
   return (
     <div
-      className="pl-16 flex justify-start items-center w-screen h-screen bg-opacity-60 font-pop"
-      style={{backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
+      className="-mx-16 flex justify-end items-center w-screen h-screen bg-opacity-60 font-pop"  
     >
       <form
         method="POST"

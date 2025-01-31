@@ -17,6 +17,12 @@ module.exports = {
     extend: {
       fontFamily: {
         'pop': ["Poppins", "sans-serif"],
+      },
+      rotate: {
+        '15': '15deg',
+      },
+      backgroundImage: {
+        'noise': "url('https://www.reactbits.dev/assets/noise.png')",
       }
     },
   },
