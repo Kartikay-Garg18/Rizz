@@ -8,7 +8,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
         const token = req.cookies?.accessToken || req.headers['authorization']?.replace('Bearer ', '');
         if(!token){
-            throw new ApiError(401, 'Unauthorized');
+            throw new ApiError(401, 'Unauthorized Token');
         }
     
         const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -16,7 +16,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
         const user = await User.findById(decodeToken._id).select('-password -refreshToken') || await GoogleUser.findById(decodeToken._id).select('-refreshToken');
 
         if(!user){
-            throw new ApiError(401, 'Unauthorized');
+            throw new ApiError(401, 'User not found');
         }
 
         req.user = user;
