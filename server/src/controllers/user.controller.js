@@ -93,6 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
     sameSite: "Strict",
   };
   const loggedInUser = {
+    id: checkUser._id,
     email: checkUser.email,
     username: checkUser.username,
     profilePictureUrl: checkUser.profilePictureUrl,
@@ -186,6 +187,7 @@ const googleLoginUser = asyncHandler(async (req, res) => {
     sameSite: "Strict",
   };
   const loggedInUser = {
+    id: user._id,
     email: email,
     username: name,
     profilePictureUrl: picture,
