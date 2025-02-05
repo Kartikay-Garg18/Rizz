@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import userRouter from './routes/user.routes.js'
+import messageRouter from './routes/message.routes.js'
 import cors from 'cors'
 import {app} from './utils/socket.js'
 
@@ -30,5 +31,6 @@ app.use(session({
 // app.use(cookieParser());
 
 app.use('/auth', userRouter);
+app.use('/messages', messageRouter);
 
 export default app;
