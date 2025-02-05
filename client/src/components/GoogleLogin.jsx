@@ -2,7 +2,7 @@ import React from 'react'
 import {useGoogleLogin} from '@react-oauth/google'
 import { useDispatch } from 'react-redux'
 import { googleLogin as login } from '../services/auth'
-import { login as authLogin } from '../store/authSlice'
+import { login as authLogin ,connectSocket} from '../store/authSlice'
 import Google from '../assets/Google.svg'
 
 const GoogleLogin = () => {
@@ -12,6 +12,7 @@ const GoogleLogin = () => {
             if(authResult['code']){
                 const result = await login(authResult['code']);
                 dispatch(authLogin(result))
+                dispatch(connectSocket());
             }
         } catch (error) {
             console.error(error);

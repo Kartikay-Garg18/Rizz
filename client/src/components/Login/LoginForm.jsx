@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { login as authLogin } from "../../store/authSlice";
+import { login as authLogin , connectSocket} from "../../store/authSlice";
 import { useForm } from "react-hook-form";
 import { login } from "../../services/auth";
 import bg from "../../assets/bg.png";
@@ -24,6 +24,7 @@ const LoginForm = () => {
         throw new Error("Login failed");
       }
       dispatch(authLogin(user));
+      dispatch(connectSocket());
       navigate("/");
     } catch (e) {
       // console.log(e);
