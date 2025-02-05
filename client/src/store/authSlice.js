@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie'
 import {io} from 'socket.io-client';
+const API_URI = import.meta.env.VITE_APP_API_URI;
 
 const initialState ={
     status: false,
@@ -15,7 +16,7 @@ const authSlice = createSlice({
     reducers : {
         login: (state, action) => {
             state.status = true;
-            state.user = action.payload.data.data.loggedInUser?action.payload.data.data.loggedInUser : action.payload.data.data;
+            state.user = action.payload;
         },
 
         logout: (state) => {
@@ -26,7 +27,7 @@ const authSlice = createSlice({
         },
         connectSocket: (state) => {
             if(!state.user || state.socket?.connected) return;
-            const socket=io('http://localhost:3000', {query: {userId: state.user.id}});
+            const socket=io(API_URI, {query: {userId: state.user.id}});
             socket.connect();
             state.socket = socket;
             socket.on('onlineUsers', (users) => {

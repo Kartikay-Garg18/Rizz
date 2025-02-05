@@ -46,11 +46,11 @@ const login = async (data) => {
         if(!user){
             throw new Error('Login failed');
         }
-        console.log(user.data.data.accessToken);
+
         setAccessToken(user.data.data.accessToken);
         setRefreshToken(user.data.data.refreshToken);
 
-        return user;
+        return user.data.data.loggedInUser;
 
     } catch (error){
         toast.error(error.response.data.message, {
@@ -72,13 +72,12 @@ const login = async (data) => {
 const getUser = async () => {
     try{
         const accessToken = Cookies.get('accessToken');
-        console.log(accessToken);
         const user = await axios.get(`${API_URI}/auth/user`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-        return user;
+        return user.data.data;
     } catch(e){
         throw new Error('User not found');
     }
@@ -93,8 +92,7 @@ const googleLogin = async (code) => {
 
         setAccessToken(user.data.data.accessToken);
         setRefreshToken(user.data.data.refreshToken);
-        
-        return user;
+        return user.data.data.loggedInUser;
     } catch (error) {
         console.error(error);
     }

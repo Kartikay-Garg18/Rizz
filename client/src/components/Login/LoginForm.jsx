@@ -25,7 +25,7 @@ const LoginForm = () => {
       }
       dispatch(authLogin(user));
       dispatch(connectSocket());
-      navigate("/");
+      navigate("/chat");
     } catch (e) {
       // console.log(e);
     }
