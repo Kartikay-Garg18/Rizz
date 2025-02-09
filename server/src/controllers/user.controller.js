@@ -143,7 +143,13 @@ const generateToken = async (id, db) => {
 };
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const loggedInUser = req.user;
+  const checkUser = req.user;
+  const loggedInUser = {
+    id: checkUser._id,
+    email: checkUser.email,
+    username: checkUser.username,
+    profilePictureUrl: checkUser.profilePictureUrl,
+  };
   return res
     .status(200)
     .json(new ApiResponse(200, loggedInUser, "User retrieved successfully"));
