@@ -7,7 +7,7 @@ import Login from './components/Login';
 import Signup from './components/Signup.jsx';
 import Forgot from './components/Forgot.jsx';
 import Chat from './components/Chat.jsx';
-import { getUser } from './services/auth';
+import { getUser} from './services/auth';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 
@@ -21,6 +21,7 @@ function App() {
       .then((user) => {
         if (user) {
           dispatch(login(user));
+
         }
       })
       .catch((error) => {
