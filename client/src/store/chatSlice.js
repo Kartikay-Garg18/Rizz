@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
+import { useSelector} from 'react-redux';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -12,23 +12,32 @@ const initialState = {
 const accessToken = Cookies.get('accessToken');
 const API_URI = import.meta.env.VITE_APP_API_URI;
 
+let userHandler;
+
 const chatSlice = createSlice({
     name: 'chat',
     initialState,
     reducers: {
         getUsers: async (state) => {
             try {
-                console.log(accessToken);
+                // console.log(accessToken);
                 const users = await axios.get(`${API_URI}/messages/user`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
                     }
                 });
-                console.log(users);
-                state.users = users;
+                // console.log(users.data.data.filteredUsers);
+                userHandler = users.data.data.filteredUsers;
+                console.log("Users in getUser : ",userHandler);
             } catch (error) {
                 console.error('Error in getUsers (chatSlice): ', error.message);
             }
+        },
+        setUsers : (state,action) => {
+            console.log("Users in setUsers : ",action.payload);
+            console.log("Users in state before : ",state.users);
+            state.users=action.payload;
+            console.log("Users in state after : ",state.users);
         },
         getMessages: async (state, action) => {
             try {
@@ -67,6 +76,14 @@ const chatSlice = createSlice({
         }
     }
 });
-export const {getUsers,getMessages,setSelectedUser,sendMessage,listenForMessages,stopListeningForMessages} = chatSlice.actions;
+
+export const handleSetUsers = () => (dispatch,getState) => {
+    const state=getState();
+    console.log("Users in handleSetUsers",userHandler);
+    dispatch(setUsers(userHandler));
+    // console.log("Users after setting",state.users);
+}
+
+export const {getUsers,getMessages,setSelectedUser,sendMessage,listenForMessages,stopListeningForMessages,setUsers} = chatSlice.actions;
 
 export default chatSlice.reducer;

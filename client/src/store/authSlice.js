@@ -124,13 +124,5 @@ export const connectSocket = () => (dispatch, getState) => {
     // console.log("After connect Socket", socket, auth);
 };
 
-// Thunk to disconnect socket
-export const disconnectSocket = () => (dispatch, getState) => {
-    if (socket) {
-        socket.disconnect();
-        socket = null;
-    }
-};
-
 export const { login, logout, setOnlineUsers } = authSlice.actions;
 export default authSlice.reducer;

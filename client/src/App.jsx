@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from './store/authSlice';
+import { connectSocket, login } from './store/authSlice';
 import Login from './components/Login';
 import Signup from './components/Signup.jsx';
 import Forgot from './components/Forgot.jsx';
@@ -21,7 +21,7 @@ function App() {
       .then((user) => {
         if (user) {
           dispatch(login(user));
-
+          dispatch(connectSocket());
         }
       })
       .catch((error) => {

@@ -1,8 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import {useSelector,useDispatch} from 'react-redux';
-import {setSelectedUser} from '../store/chatSlice';
-import { getUsers } from '../store/chatSlice';
+import {getUsers,handleSetUsers,setSelectedUser} from '../store/chatSlice';
 
 
 const Users = () => {
@@ -11,7 +10,15 @@ const Users = () => {
 
     useEffect(()=>{
       dispatch(getUsers());
+      setTimeout(()=>{
+        dispatch(handleSetUsers());
+      },500)
+      // setTimeout(()=>{
+      //   users=useSelector(state=>state.chat.users);
+      //   console.log("Users in timeout - ",users);
+      // },600)
     },[])
+
     // console.log(users);
     const cl = 'm-2 p-2 h-[10%] w-[100%] text-amber-400 text-xl flex items-center justify-start border border-black-500 cursor-pointer';
   return (
@@ -21,18 +28,22 @@ const Users = () => {
             <input type="text" placeholder='search' className='rounded-2xl p-4 h-8 w-[90%]'/>
           </div>
           <div className='m-2 overflow-y-scroll flex flex-wrap  border border-yellow-300'>
-             {users.map((user)=>{
-                <button 
-                  key={user._id}
-                  onClick={()=>dispatch(setSelectedUser(user))}
-                  className={cl}
-                >
-                  <div className='bg-gray-900'>
-                    <img src={user.profilePictureUrl || ""} alt="Profile pic" className='size-12 object-cover rounded-full'/>
-                    <h3>{user.username}</h3>
-                  </div>
-                </button>
-             })} 
+             {  setTimeout(()=>{
+                  console.log("User in div - ",users);
+                  users.map((user)=>{
+                  <button 
+                    key={user._id}
+                    onClick={()=>dispatch(setSelectedUser(user))}
+                    className={cl}
+                  >
+                    <div className='bg-gray-900'>
+                      <img src={user.profilePictureUrl || ""} alt="Profile pic" className='size-12 object-cover rounded-full'/>
+                      <h3>{user.username}</h3>
+                    </div>
+                  </button>
+                  })
+                },1000)
+             } 
           </div>
         </div>
   )

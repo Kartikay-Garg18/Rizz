@@ -9,8 +9,8 @@ import { GoogleUser } from "../models/googleuser.model.js";
 const getUsersForSidebar=asyncHandler(async (req,res)=>{
     try {
         const loggedInUserId = req.user._id;
-        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
-        filteredUsers = [...filteredUsers,await GoogleUser.find({ _id: { $ne: loggedInUserId } }).select("-password")];
+        let filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+        filteredUsers = [...filteredUsers,... await GoogleUser.find({ _id: { $ne: loggedInUserId } }).select("-password")];
         res.status(200).json(new ApiResponse(200,{filteredUsers},"Users fetched successfully"));
       } catch (error) {
         console.error("Error in getUsersForSidebar: ", error.message);
