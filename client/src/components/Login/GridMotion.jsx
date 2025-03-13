@@ -4,7 +4,6 @@ import { cn } from "../../utils/utils"
 
 export function GridMotion({
   items = [],
-  gradientColor = 'black',
   className
 }) {
   const gridRef = useRef([])
@@ -55,9 +54,6 @@ export function GridMotion({
     <div className={cn("h-full w-full overflow-hidden", className)} ref={gridRef}>
       <section
         className="relative flex h-screen w-full items-center justify-center overflow-hidden"
-        // style={{
-        //   background: `radial-gradient(circle, ${gradientColor} 0%, transparent 100%)`,
-        // }}
       >
         <div className="relative z-2 flex-none grid h-[130vh] w-[130vw] gap-4 grid-rows-[repeat(4,1fr)] grid-cols-[100%] -rotate-15 origin-center">
           {[...Array(4)].map((_, rowIndex) => (

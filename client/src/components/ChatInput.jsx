@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState,useRef } from 'react';
-import { useSelector , useDispatch} from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { sendMessage } from '../store/chatSlice';
 
 function ChatInput() {

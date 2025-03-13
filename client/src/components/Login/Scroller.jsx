@@ -27,12 +27,10 @@ export function Scroller() {
 
   return (
     <div className="space-y-8">
-      {/* Default grid with system-generated items */}
       <div className="h-screen w-full bg-gradient-to-br from-background to-muted">
         <GridMotion />
       </div>
 
-      {/* Custom grid with rich content */}
       <div className="h-screen w-full bg-gradient-to-br from-background to-muted">
         <GridMotion 
           items={items}
@@ -40,16 +38,6 @@ export function Scroller() {
           className="relative opacity-100"
         />
       </div>
-      
-
-      {/* Minimal grid with dark theme */}
-      {/* <div className="h-screen w-full bg-black">
-        <GridMotion 
-          items={items.slice(0, 14)}
-          gradientColor="hsl(var(--brand-foreground))"
-          className="opacity-75"
-        />
-      </div> */}
     </div>
   )
 }

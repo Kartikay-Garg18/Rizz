@@ -64,7 +64,6 @@ const login = async (data) => {
             theme: "colored",
             transition: Bounce,
             });
-        // console.log(e);
         throw new Error('Login failed');
     }
 }
@@ -130,7 +129,6 @@ const resetPassword = async (data) => {
             theme: "colored",
             transition: Bounce,
             });
-        // console.log(e);
         throw new Error('Login failed');
     }
 }

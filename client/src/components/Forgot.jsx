@@ -34,7 +34,6 @@ const Forgot = () => {
         }
         try {
             const data = await forgotPassword({email});
-            console.log(data)
             setShowEmail(false);
             setShowOtp(true);
             setOtp(data.verifycode);

@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { login as authLogin , connectSocket} from "../../store/authSlice";
 import { useForm } from "react-hook-form";
 import { login } from "../../services/auth";
-import bg from "../../assets/bg.png";
 import Email from "../../assets/Email.svg";
 import Lock from "../../assets/Lock.svg";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -19,7 +18,6 @@ const LoginForm = () => {
   const loginUser = async (data) => {
     try {
       const user = await login(data);
-      // console.log(user);
       if (!user) {
         throw new Error("Login failed");
       }
@@ -27,7 +25,7 @@ const LoginForm = () => {
       dispatch(connectSocket());
       navigate("/chat");
     } catch (e) {
-      // console.log(e);
+      console.error(e);
     }
   };
 
