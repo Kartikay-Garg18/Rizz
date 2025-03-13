@@ -1,46 +1,50 @@
 import React from 'react'
 import { useEffect } from 'react';
-import {useSelector,useDispatch} from 'react-redux';
-import {setSelectedUser, setUsers} from '../store/chatSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedUser, setUsers } from '../store/chatSlice';
 import { getUsers } from '../services/chat';
+import profile from '../assets/ProfilePhoto.jpg' ;
 
 
 const Users = () => {
-    const dispatch=useDispatch();
-    const users = useSelector(state=>state.chat.users);
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.chat.users);
 
-    useEffect(()=>{
-      getUsers().then((users) => {
-        if(users){
-          dispatch(setUsers(users));
-        }
-      })
-    },[])
+  useEffect(() => {
+    getUsers().then((users) => {
+      if (users) {
+        dispatch(setUsers(users));
+      }
+    })
+  }, [])
 
-    const cl = 'm-2 p-2 h-[10%] w-[100%] text-amber-400 text-xl flex items-center justify-start border border-black-500 cursor-pointer';
+  const cl = 'p-2 h-[10%] w-[100%] text-amber-400 text-xl flex items-center justify-start  cursor-pointer rounded-2xl';
   return (
-    <div className='m-2 flex flex-col  bg-slate-950 w-[25%] border border-green-400 opacity-45'>
-          
-          <div className='m-2 h-[15%] sticky top-2 flex justify-center items-center border border-orange-50 text-amber-400 text-xl'>
-            <input type="text" placeholder='search' className='rounded-2xl p-4 h-8 w-[90%]'/>
-          </div>
-          <div className='m-2 overflow-y-scroll flex flex-wrap  border border-yellow-300'>
-             {
-                users.map((user)=>{
-                return (<button 
-                  key={user._id}
-                  onClick={()=>dispatch(setSelectedUser(user))}
-                  className={cl}
-                >
-                  <div className='bg-gray-900'>
-                    <img src={user.profilePictureUrl || ""} alt="Profile pic" className='size-12 object-cover rounded-full'/>
-                    <h3>{user.username}</h3>
-                  </div>
-                </button>)
-                })
-              }
-          </div>
-        </div>
+    <div className='m-2 flex flex-col  bg-slate-950 w-[25%] border border-green-400 opacity-35'>
+
+      <div className='mx-2 my-4 h-[8%] sticky top-2 flex justify-center items-center text-amber-400 text-xl'>
+        <input type="text" placeholder='Search' className='rounded-2xl px-6 h-10 w-[90%]' />
+      </div>
+      <div className='overflow-y-scroll flex flex-wrap'>
+        {
+          users.map((user) => {
+            return (<button
+              key={user._id}
+              onClick={() => dispatch(setSelectedUser(user))}
+              className={cl}
+            >
+              <div className='px-2 rounded-2xl'>
+                <img src={user.profilePictureUrl || profile} alt="profile photo" className='size-9 object-cover rounded-full' />
+              </div>
+              <div className='mx-2 flex justify-center items-center'>
+                <h3>{user.username}</h3>
+              </div>
+            </button>)
+          })
+        }
+        
+      </div>
+    </div>
   )
 }
 
