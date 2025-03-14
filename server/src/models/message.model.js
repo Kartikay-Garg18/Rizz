@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema(
         },
         senderType: {
             type: String,
-            required: true,
+            // required: true,
             enum: ['User', 'GoogleUser'],
         },
         receiverId: {
@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema(
         },
         receiverType: {
             type: String,
-            required: true,
+            // required: true,
             enum: ['User', 'GoogleUser'],
         },
         text: {

@@ -2,7 +2,7 @@ import React from 'react'
 
 const Sidebar = () => {
   return (
-    <div className='m-2 bg-slate-50 w-[6%] border border-blue-400 flex justify-center items-center flex-col'>
+    <div className='m-2 bg-slate-50 w-[6%] overflow-y-auto border border-blue-400 flex justify-center items-center flex-col'>
             <img src="https://cdn.vectorstock.com/i/500p/88/89/golden-luxury-home-icon-vector-44618889.jpg" alt="Home icon" className='size-10 m-1 h-14 w-14  rounded-full' />
 
             <img src="https://static.vecteezy.com/system/resources/previews/000/533/318/non_2x/chat-icon-sign-with-gold-color-vector-eps10-illustration.jpg" alt="Chat icon" className='size-10 m-1 h-14 w-14  rounded-full' />

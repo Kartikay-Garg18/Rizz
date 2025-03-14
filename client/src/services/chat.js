@@ -14,8 +14,30 @@ const getUsers = async () => {
 
         return users.data.data.filteredUsers;
     } catch (error) {
-        console.error('Error in getUsers (chatSlice): ', error.message);
+        console.error('Error in getUsers (services -> chat): ', error.message);
     }
 }
 
-export {getUsers};
+const getMessages = async (receiverId) => {
+    try {
+        const response = await axios.get(`${API_URI}/messages/${receiverId}`,{
+            headers: {Authorization: `Bearer ${accessToken}`}
+        });
+        return response.data.data.messages;
+    } catch (error) {
+        console.error('Error in getMessages (services -> chat): ', error.message);
+    }
+}
+
+const sendMessage= async (id,message) => {
+    try {
+        const response = await axios.post(`${API_URI}/messages/send/${id}`,message,{
+            headers: {Authorization: `Bearer ${accessToken}`}
+        });
+        return response.data.data.newMessage;
+    } catch (error) {
+        console.error('Error in sendMessage (services -> chat): ', error.message);
+    }
+}
+
+export {getUsers,getMessages,sendMessage};

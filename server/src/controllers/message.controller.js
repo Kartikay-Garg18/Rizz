@@ -3,7 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
 import {upload} from "../utils/cloudinary.js";
-import {getSocketId} from "../utils/socket.js";
+import {getSocketId, io} from "../utils/socket.js";
 import { GoogleUser } from "../models/googleuser.model.js";
 
 const getUsersForSidebar=asyncHandler(async (req,res)=>{

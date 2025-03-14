@@ -1,18 +1,11 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { useSelector} from 'react-redux';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const initialState = {
     messages: [],
     users: [],
     selectedUser: null,
 }
-
-const accessToken = Cookies.get('accessToken');
-const API_URI = import.meta.env.VITE_APP_API_URI;
-
-let userHandler;
 
 const chatSlice = createSlice({
     name: 'chat',
@@ -21,28 +14,14 @@ const chatSlice = createSlice({
         setUsers : (state,action) => {
             state.users=action.payload;
         },
-        getMessages: async (state, action) => {
-            try {
-                const response = await axios.get(`${API_URI}/messages/${action.payload}`,{
-                    headers: {Authorization: `Bearer ${accessToken}`}
-                });
-                state.messages = response.data.data.messages;
-            } catch (error) {
-                console.error('Error in getMessages (chatSlice): ', error.message);
-            }
+        setMessages : (state,action) =>{
+            state.messages=action.payload;
         },
         setSelectedUser: (state, action) => {
             state.selectedUser = action.payload;
         },
-        sendMessage: async (state, action) => {
-            try {
-                const response = await axios.post(`${API_URI}/messages/send/${state.selectedUser._id}`,action.payload,{
-                    headers: {Authorization: `Bearer ${accessToken}`}
-                });
-                state.messages.push(response.data.data.newMessage);
-            } catch (error) {
-                console.error('Error in sendMessage (chatSlice): ', error.message);
-            }
+        addMessage : (state,action) =>{
+            state.messages.push(action.payload);
         },
         listenForMessages: (state) => {
             if(!state.selectedUser) return;
@@ -60,6 +39,6 @@ const chatSlice = createSlice({
 });
 
 
-export const {getMessages,setSelectedUser,sendMessage,listenForMessages,stopListeningForMessages,setUsers} = chatSlice.actions;
+export const {setMessages,setSelectedUser,addMessage,listenForMessages,stopListeningForMessages,setUsers} = chatSlice.actions;
 
 export default chatSlice.reducer;
