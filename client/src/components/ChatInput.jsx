@@ -3,6 +3,8 @@ import { useState,useRef } from 'react';
 import { useDispatch,useSelector} from 'react-redux';
 import { sendMessage } from '../services/chat';
 import { addMessage } from '../store/chatSlice';
+import send from '../assets/Send.png';
+import upload from '../assets/Upload.png';
 
 function ChatInput() {
   const [text, setText] = useState('');
@@ -41,25 +43,31 @@ function ChatInput() {
   }
 
   return (
-    <div className='m-2 flex justify-center items-center flex-wrap h-[10%] border border-gray-300'>
+    <div className='flex justify-center items-center flex-wrap h-[10%]'>
         {image &&
-            <div className='ml-2 h-12 w-14 flex justify-center items-center relative gap-2'>
+            <div className='h-12 w-14 flex justify-center items-center relative gap-2'>
                 <img src={image} alt='Image Preview' className='w-12 h-12 object-cover rounded-full'/>
                 <button onClick={removeImage}  className='absolute -top-1.5 -rigth-1.5 w-5 h-5 rounded-full bg-slate-500'>X</button>
             </div>
         }
-        <form onSubmit={handleSendMessage} className='flex justify-evenly items-center'>
+        <form onSubmit={handleSendMessage} className='flex justify-evenly items-center w-[100%]'>
+          <button className='ml-2 h-14 w-14 text-white rounded-full'>
+            <input id='image' type="file"  ref={inputFile} accept="image/*" onChange={handleImageChange} className='hidden'/>
+            <label htmlFor="image" onClick={()=> {inputFile.current?.click()}}>
+              <img src={upload} className='size-10 rounded-full cursor-pointer' />
+            </label>
+          </button>
+
           <input type="text" 
-            className='m-2 p-4 h-[75%] w-[98%]  bg-slate-950 opacity-35 text-red-200 border border-gray-500 rounded-full' 
+            className='p-4 h-[75%] w-[90%]  bg-slate-950 opacity-35 text-white rounded-full' 
             placeholder='Type a message'
             value={text} 
             onChange={(e)=>{setText(e.target.value)}} />
-          <input type="file"  ref={inputFile} accept="image/*" onChange={handleImageChange} className='hidden'/>
-          <button onClick={()=> {inputFile.current?.click()}}>Image Icon</button>
+            
           <button 
-            className='mr-2 h-12 w-12 bg-slate-950 border text-white border-green-500 opacity-30 rounded-full cursor-pointer'
+            className='ml-2 h-14 w-14 text-white rounded-full cursor-pointer'
             type='submit'>
-              Send Icon
+              <img src={send} alt="send icon" className='size-10 rounded-full' />
           </button>
         </form>
     </div>

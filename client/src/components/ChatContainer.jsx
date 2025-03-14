@@ -29,9 +29,9 @@ function ChatContainer() {
   },[messages])
 
   return (
-    <div className='m-2 w-[65%] border border-red-300'>
+    <div className='mr-2 my-2 w-[65%] border border-gray-300'>
       <ChatHeader/>
-      <div className='m-2 h-[75%] border bg-slate-900 border-orange-300 overflow-y-auto'>
+      <div className='h-[80%] rounded-2xl bg-slate-900 overflow-y-auto'>
         {messages.map((message)=>{
           return(
           <div key={message._id} className={`chat ${message.senderId == user.id ? 'chat-end' : 'chat-start'}`} ref={lastMessage}>

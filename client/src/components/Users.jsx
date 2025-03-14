@@ -20,8 +20,7 @@ const Users = () => {
 
   const cl = 'p-2 h-[10%] w-[100%] text-amber-400 text-xl flex items-center justify-start  cursor-pointer rounded-2xl';
   return (
-    <div className='m-2 flex flex-col  bg-slate-950 w-[25%] border border-green-400 opacity-35'>
-
+    <div className='my-2 flex flex-col rounded-xl bg-slate-950 w-[25%] opacity-50'>
       <div className='mx-2 my-4 h-[8%] sticky top-2 flex justify-center items-center text-amber-400 text-xl'>
         <input type="text" placeholder='Search' className='rounded-2xl px-6 h-10 w-[90%]' />
       </div>

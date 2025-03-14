@@ -9,12 +9,15 @@ function ChatHeader() {
   const dispatch = useDispatch();
 
   return (
-      <div className="p-2.5 border-b border-slate-300">
+      <div className="p-2.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+        <button className='m-1' onClick={() => dispatch(setSelectedUser(null))}>
+          <img src="https://cdn-icons-png.flaticon.com/512/109/109618.png" alt="close button" className='size-6 invert rounded-full'/>
+        </button>
           <div className="avatar">
             <div className="size-10 rounded-full relative">
-              <img src={selectedUser.profilePictureUrl || profile} alt={selectedUser.username} />
+              <img src={selectedUser.profilePictureUrl || profile} alt={selectedUser.username}/>
             </div>
           </div>
           <div>
@@ -24,9 +27,6 @@ function ChatHeader() {
             </p>
           </div>
         </div>
-        <button onClick={() => dispatch(setSelectedUser(null))}>
-          Close Button
-        </button>
       </div>
     </div>
   )
