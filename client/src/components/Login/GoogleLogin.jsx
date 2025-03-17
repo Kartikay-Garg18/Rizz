@@ -1,9 +1,9 @@
 import React from 'react'
 import {useGoogleLogin} from '@react-oauth/google'
 import { useDispatch } from 'react-redux'
-import { googleLogin as login } from '../services/auth'
-import { login as authLogin ,connectSocket} from '../store/authSlice'
-import Google from '../assets/Google.svg'
+import { googleLogin as login } from '../../services/auth'
+import { login as authLogin ,connectSocket} from '../../store/authSlice'
+import Google from '../../assets/Google.svg'
 import { useNavigate } from 'react-router-dom'
 
 const GoogleLogin = () => {

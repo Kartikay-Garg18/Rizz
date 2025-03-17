@@ -7,7 +7,7 @@ import {useForm} from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { createAccount } from '../../services/auth'
 import { toast, Bounce } from 'react-toastify'
-import GoogleLogin from '../GoogleLogin'
+import GoogleLogin from '../Login/GoogleLogin'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const SignUpForm = () => {

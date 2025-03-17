@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedUser, setUsers } from '../../store/chatSlice';
 import { getUsers } from '../../services/chat';
-import profile from '../assets/ProfilePhoto.jpg' ;
+import profile from '../../assets/ProfilePhoto.jpg' ;
 
 
 const Users = () => {

@@ -3,8 +3,8 @@ import { useState,useRef } from 'react';
 import { useDispatch,useSelector} from 'react-redux';
 import { sendMessage } from '../../services/chat';
 import { addMessage } from '../../store/chatSlice';
-import send from '../assets/Send.png';
-import upload from '../assets/Upload.png';
+import send from '../../assets/Send.png';
+import upload from '../../assets/Upload.png';
 
 function ChatInput() {
   const [text, setText] = useState('');

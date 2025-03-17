@@ -1,7 +1,7 @@
 import React from 'react'
-import { setSelectedUser } from '../store/chatSlice';
+import { setSelectedUser } from '../../store/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import profile  from '../assets/ProfilePhoto.jpg'
+import profile  from '../../assets/ProfilePhoto.jpg'
 
 function ChatHeader() {
   const selectedUser = useSelector(state => state.chat.selectedUser);

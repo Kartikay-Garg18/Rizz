@@ -4,7 +4,7 @@ import {listenForMessages,setMessages,stopListeningForMessages} from '../../stor
 import { getMessages } from '../../services/chat';
 import { useEffect,useRef } from 'react';
 import ChatInput from './ChatInput';
-import ChatHeader from '../ChatHeader';
+import ChatHeader from './ChatHeader';
 
 
 function ChatContainer() {

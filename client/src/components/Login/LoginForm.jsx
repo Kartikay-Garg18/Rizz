@@ -7,7 +7,7 @@ import { login } from "../../services/auth";
 import Email from "../../assets/Email.svg";
 import Lock from "../../assets/Lock.svg";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleLogin from "../GoogleLogin";
+import GoogleLogin from "./GoogleLogin";
 
 const LoginForm = () => {
   const gradient = true;

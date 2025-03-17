@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { toast, Bounce } from 'react-toastify'
 import { forgotPassword, resetPassword } from '../services/auth';
-import OtpInput from './OtpInput';
+import OtpInput from './Forgot/OtpInput';
 import { useNavigate, Link } from 'react-router-dom';
 import bg from '../assets/bg.png'
 
