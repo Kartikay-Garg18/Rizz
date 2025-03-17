@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector , useDispatch} from 'react-redux';
-import {listenForMessages,setMessages,stopListeningForMessages} from '../store/chatSlice';
-import { getMessages } from '../services/chat';
+import {listenForMessages,setMessages,stopListeningForMessages} from '../../store/chatSlice';
+import { getMessages } from '../../services/chat';
 import { useEffect,useRef } from 'react';
 import ChatInput from './ChatInput';
-import ChatHeader from './ChatHeader';
+import ChatHeader from '../ChatHeader';
 
 
 function ChatContainer() {
@@ -28,16 +28,21 @@ function ChatContainer() {
       if(lastMessage.current && messages) lastMessage.current.scrollIntoView({behavior: 'smooth'});
   },[messages])
 
+  function timeFormatting(time){
+    let splittedTime = time.split(':');
+    return `${splittedTime[0]}:${splittedTime[1]} ${splittedTime[2].substring(3)}`;
+  }
+
   return (
-    <div className='mr-2 my-2 w-[65%] border border-gray-300'>
+    <div className='my-2 w-full'>
       <ChatHeader/>
-      <div className='h-[80%] rounded-2xl bg-slate-900 overflow-y-auto'>
+      <div className='h-[80%] bg-gray-900 overflow-y-auto px-2'>
         {messages.map((message)=>{
           return(
           <div key={message._id} className={`chat ${message.senderId == user.id ? 'chat-end' : 'chat-start'}`} ref={lastMessage}>
             <div className='chat-header'>
                   <time className='text-xs text-gray-400 opacity-50'>
-                    {new Date(message.createdAt).toLocaleTimeString()}
+                    {timeFormatting(new Date(message.createdAt).toLocaleTimeString())}
                   </time>
             </div>
             <div className='chat-bubble flex flex-col'>

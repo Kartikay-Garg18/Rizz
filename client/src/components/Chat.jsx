@@ -1,20 +1,21 @@
 import React from 'react'
-import Sidebar from './Sidebar';
-import Users from './Users';
-import ChatContainer from './ChatContainer';
+import Sidebar from './Chat/Sidebar';
+import Users from './Chat/Users';
+import ChatContainer from './Chat/ChatContainer';
 import {useSelector} from 'react-redux';
-import NoChatSelected from './NoChatSelected';
-import { use } from 'react';
+import NoChatSelected from './Chat/NoChatSelected';
 
 
 const Chat = () => {
   const selectedUser=useSelector(state=>state.chat.selectedUser);
   return (
     <>
-      <div className=' flex justify-between h-screen w-screen border border-blue-300' >
+      <div className='flex h-screen w-screen' >
         <Sidebar/>
-        <Users/>
-        {!selectedUser ? <NoChatSelected/> : <ChatContainer/>}
+        <div className='flex w-full'>
+          <Users/>
+          {!selectedUser ? <NoChatSelected/> : <ChatContainer/>}
+        </div>
       </div>
     </>
   )
