@@ -39,21 +39,23 @@ const getMessages=asyncHandler(async (req,res)=>{
 
 const sendMessage=asyncHandler(async (req,res)=>{
     try {
-        const { text, image } = req.body;
+        const { text, images } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
     
-        let imageUrl;
-        if (image) {
-          const uploadResponse = upload(image);
-          imageUrl = uploadResponse.secure_url;
+        let imageUrls=[];
+        if (images.length !==0) {
+          images.map(image=>{
+            const uploadResponse = upload(image);
+            imageUrls.push(uploadResponse.secure_url);
+          })
         }
     
         const newMessage = new Message({
           senderId,
           receiverId,
           text,
-          image: imageUrl,
+          images: imageUrls,
         });
     
         await newMessage.save();

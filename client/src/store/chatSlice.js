@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { useSelector} from 'react-redux';
+import { socket } from './authSlice';
 
 const initialState = {
     messages: [],
@@ -23,22 +23,13 @@ const chatSlice = createSlice({
         addMessage : (state,action) =>{
             state.messages.push(action.payload);
         },
-        listenForMessages: (state) => {
-            if(!state.selectedUser) return;
-            const socket = useSelector(state=>state.auth.socket);
-            socket.on('newMessage', (message) => {
-                if(message.senderId !== state.selectedUser._id) return;   
-                state.messages.push(message);
-            });
-        },
         stopListeningForMessages: () => {
-            const socket = useSelector(state=>state.auth.socket);
             socket.off('newMessage');
         }
     }
 });
 
 
-export const {setMessages,setSelectedUser,addMessage,listenForMessages,stopListeningForMessages,setUsers} = chatSlice.actions;
+export const {setMessages,setSelectedUser,addMessage,stopListeningForMessages,setUsers} = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -49,5 +49,6 @@ export const connectSocket = () => (dispatch, getState) => {
 
 };
 
+export {socket};
 export const { login, logout, setOnlineUsers } = authSlice.actions;
 export default authSlice.reducer;

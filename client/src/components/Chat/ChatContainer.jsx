@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector , useDispatch} from 'react-redux';
-import {listenForMessages,setMessages,stopListeningForMessages} from '../../store/chatSlice';
-import { getMessages } from '../../services/chat';
+import {addMessage, setMessages,stopListeningForMessages} from '../../store/chatSlice';
+import { getMessages , listenForMessages } from '../../services/chat';
 import { useEffect,useRef } from 'react';
 import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
@@ -20,8 +20,9 @@ function ChatContainer() {
     }).catch((error)=>{
         console.log("Error in setting messages (ChatContainer)",error);
     });
-    listenForMessages();
-    return () => stopListeningForMessages();
+    const message=listenForMessages(selectedUser);
+    if(message) dispatch(addMessage(message));
+    return () => dispatch(stopListeningForMessages());
   },[selectedUser,listenForMessages,stopListeningForMessages,getMessages,setMessages])
 
   useEffect(()=>{ 
@@ -46,7 +47,13 @@ function ChatContainer() {
                   </time>
             </div>
             <div className='chat-bubble flex flex-col'>
-                  {message.image && <img src={message.image} alt="message image" className='w-48 h-48 object-cover rounded-lg'/>}
+                  {message.images && 
+                    message.images.map( (image) =>{
+                      return(
+                        <img src={image} alt="message image" className='w-48 h-48 object-cover rounded-lg'/>
+                      )
+                    })
+                  }
                   {message.text && <p className='text-lg'>{message.text}</p>}
             </div>
           </div>)

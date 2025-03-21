@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import { socket } from '../store/authSlice';
 
 const API_URI = import.meta.env.VITE_APP_API_URI;
 const accessToken = Cookies.get('accessToken');
@@ -40,4 +41,16 @@ const sendMessage= async (id,message) => {
     }
 }
 
-export {getUsers,getMessages,sendMessage};
+const listenForMessages = (selectedUser) => {
+    console.log("Selected User",selectedUser);
+    if(!selectedUser) return;
+    console.log("Socket",socket)
+    socket.on('newMessage', (message) => {
+        console.log("Message",message);
+        console.log("condition",String(message.senderId) !== String(selectedUser._id));
+        if(String(message.senderId) !== String(selectedUser._id)) return;   
+        return message;
+    });
+}
+
+export {getUsers,getMessages,sendMessage,listenForMessages};
