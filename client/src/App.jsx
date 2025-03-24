@@ -39,7 +39,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={checkUser ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/" element = {<Home />} />
         <Route path="/login" element={!checkUser ? <Login /> : <Navigate to="/" />} />
         <Route path="/signup" element={!checkUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/forgot" element={!checkUser ? <Forgot /> : <Navigate to="/" />} />

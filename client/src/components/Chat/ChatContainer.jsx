@@ -5,6 +5,7 @@ import { getMessages , listenForMessages } from '../../services/chat';
 import { useEffect,useRef } from 'react';
 import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
+import bg from '../../assets/bg.png';
 
 
 function ChatContainer() {
@@ -37,7 +38,7 @@ function ChatContainer() {
   return (
     <div className='my-2 w-full'>
       <ChatHeader/>
-      <div className='h-[80%] bg-gray-900 overflow-y-auto px-2'>
+      <div className='h-[80%] bg-gray-900 overflow-y-auto px-2 rounded-2xl'  style={{backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         {messages.map((message)=>{
           return(
           <div key={message._id} className={`chat ${message.senderId == user.id ? 'chat-end' : 'chat-start'}`} ref={lastMessage}>
