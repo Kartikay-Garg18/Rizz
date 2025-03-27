@@ -22,7 +22,7 @@ function Content() {
             </div>
             <div className='border border-l-0 border-r-0 border-t-0 border-b-gray-700 border-b-2'></div>
             <div className='m-2 w-[99%]  flex justify-around items-center flex-col'>
-                <h2 className='text-5xl font-bold m-10'>Functionalty Of RIZZ</h2>
+                <h2 className='text-5xl font-bold m-10'>Functionality Of RIZZ</h2>
                 <div className='flex justify-center items-center gap-20'>
                     <div className='w-[30%]'>
                         <h3 className='text-2xl font-bold text-center'>Real Time Chatting</h3>

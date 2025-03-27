@@ -22,13 +22,8 @@ function ChatInput() {
       return;
     }
 
-    const readers = imageFiles.map(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages(prevImages => [...prevImages, reader.result]);
-      };
-      reader.readAsDataURL(file);
-      return reader;
+    imageFiles.map(file => {
+      setImages(prevImages => [...prevImages, file])
     });
   };
 
@@ -56,7 +51,7 @@ function ChatInput() {
       <div className='flex flex-wrap gap-2'>
         {images.map((image, index) => (
           <div key={index} className='h-12 w-14 flex justify-center items-center relative gap-2'>
-            <img src={image} alt='Image Preview' className='w-12 h-12 object-cover rounded-full' />
+            <img src={URL.createObjectURL(image)} alt='Image Preview' className='w-12 h-12 object-cover rounded-full' />
             <button onClick={() => removeImage(index)} className='absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-500'>X</button>
           </div>
         ))}
@@ -73,10 +68,11 @@ function ChatInput() {
           className='p-4 h-[75%] bg-slate-950 opacity-35 text-white rounded-full w-full'
           placeholder='Type a message'
           value={text}
+          name='text'
           onChange={(e) => { setText(e.target.value) }} />
 
         <button
-          className='ml-2 h-14 text-white rounded-full cursor-pointer w-fit'
+          className={`ml-2 h-14 text-white rounded-full cursor-pointer w-fit ${!text.trim() && images.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
           type='submit'>
           <img src={send} alt="send icon" className='size-10 rounded-full' />
         </button>

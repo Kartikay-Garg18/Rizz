@@ -17,30 +17,32 @@ function App() {
   const checkUser = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    getUser()
-      .then((user) => {
-        if (user) {
-          dispatch(login(user));
-          dispatch(connectSocket());
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to fetch user:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    if(!checkUser){
+      getUser()
+        .then((user) => {
+          if (user) {
+            dispatch(login(user));
+            dispatch(connectSocket());
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user:', error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   }, [dispatch]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Home/>;
   }
 
   return (
     <>
       <Routes>
-        <Route path="/" element = {<Home />} />
-        <Route path="/login" element={!checkUser ? <Login /> : <Navigate to="/" />} />
+        <Route path="/" element ={ <Home />}/>
+        <Route path="/login" element={!checkUser ? <Login /> : <Navigate to="/chat" />} />
         <Route path="/signup" element={!checkUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/forgot" element={!checkUser ? <Forgot /> : <Navigate to="/" />} />
         <Route path="/chat" element={checkUser ? <Chat /> : <Navigate to="/login" />} />

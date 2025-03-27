@@ -37,20 +37,25 @@ const getMessages=asyncHandler(async (req,res)=>{
   }
 });
 
+const uploadImages = async (images) => {
+      let imageUrls=[];
+      if (images.length !==0) {
+        await images.map(async (image)=>{
+          let uploadResponse = await upload(image.path);
+          imageUrls.push(uploadResponse.secure_url);
+        })
+      }
+
+      return imageUrls;
+}
+
 const sendMessage=asyncHandler(async (req,res)=>{
     try {
-        const { text, images } = req.body;
+        const { text } = req.body;
+        const images = req.files;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
-    
-        let imageUrls=[];
-        if (images.length !==0) {
-          images.map(image=>{
-            const uploadResponse = upload(image);
-            imageUrls.push(uploadResponse.secure_url);
-          })
-        }
-    
+        const imageUrls = await uploadImages(images);
         const newMessage = new Message({
           senderId,
           receiverId,

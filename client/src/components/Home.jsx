@@ -17,13 +17,10 @@ const Home = () => {
     }
 
   return (
-    <div className='h-full w-full'>
+    <div className='container'>
         <Header></Header>
         <Main></Main>
         <Footer></Footer>
-        {authStatus ? <>
-                      <div>Hello {authData?.username}</div>    
-                      <button onClick={logoutHandle}>Logout</button></> : <>Need login</> }
     </div>
   )
 }

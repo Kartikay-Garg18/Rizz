@@ -32,8 +32,21 @@ const getMessages = async (receiverId) => {
 
 const sendMessage= async (id,message) => {
     try {
-        const response = await axios.post(`${API_URI}/messages/send/${id}`,message,{
-            headers: {Authorization: `Bearer ${accessToken}`}
+        const formData = new FormData();
+        formData.append('text', message.text);
+
+        // Append each image file to the FormData
+        if (message.images && message.images.length > 0) {
+            message.images.forEach((image, index) => {
+                formData.append('images', image); // 'images' must match the field name expected by multer
+            });
+        }
+        
+        const response = await axios.post(`${API_URI}/messages/send/${id}`,formData,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${accessToken}`
+            }
         });
         return response.data.data.newMessage;
     } catch (error) {
@@ -42,12 +55,8 @@ const sendMessage= async (id,message) => {
 }
 
 const listenForMessages = (selectedUser) => {
-    console.log("Selected User",selectedUser);
     if(!selectedUser) return;
-    console.log("Socket",socket)
     socket.on('newMessage', (message) => {
-        console.log("Message",message);
-        console.log("condition",String(message.senderId) !== String(selectedUser._id));
         if(String(message.senderId) !== String(selectedUser._id)) return;   
         return message;
     });

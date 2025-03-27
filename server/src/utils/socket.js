@@ -19,14 +19,11 @@ const getSocketId = (userId) =>{
 }
 
 io.on("connection",(socket)=>{
-    console.log("A user connected",socket.id);
     const user = socket.handshake.query.userId;
     if(user) userSocketMap[user] = socket.id;
-    console.log(userSocketMap);
     io.emit("onlineUsers",Object.keys(userSocketMap));
 
     socket.on("disconnect",()=>{
-        console.log("A user disconnected",socket.id); 
         delete userSocketMap[user];
         io.emit("onlineUsers",Object.keys(userSocketMap));   
     })
