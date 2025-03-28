@@ -41,12 +41,19 @@ const uploadImages = async (images) => {
       let imageUrls=[];
       if (images.length !==0) {
         await images.map(async (image)=>{
-          let uploadResponse = await upload(image.path);
-          imageUrls.push(uploadResponse.secure_url);
+          let uploadResponse = upload(image.path);
+          // imageUrls.push(uploadResponse.secure_url);
+          imageUrls.push(uploadResponse);
         })
       }
 
-      return imageUrls;
+      return Promise.allSettled(imageUrls).then((results) => {
+        return results.map((result) => {
+          if (result.status === "fulfilled") {
+            return result.value.secure_url;
+          }
+        });
+      });
 }
 
 const sendMessage=asyncHandler(async (req,res)=>{
