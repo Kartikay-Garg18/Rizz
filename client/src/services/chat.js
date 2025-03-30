@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import { socket } from '../store/authSlice';
+import { addMessage } from '../store/chatSlice';
 
 const API_URI = import.meta.env.VITE_APP_API_URI;
 const accessToken = Cookies.get('accessToken');
@@ -54,11 +55,11 @@ const sendMessage= async (id,message) => {
     }
 }
 
-const listenForMessages = (selectedUser) => {
+const listenForMessages = (selectedUser,dispatch) => {
     if(!selectedUser) return;
     socket.on('newMessage', (message) => {
-        if(String(message.senderId) !== String(selectedUser._id)) return;   
-        return message;
+        if(message.senderId !== selectedUser._id) return;   
+        dispatch(addMessage(message));
     });
 }
 

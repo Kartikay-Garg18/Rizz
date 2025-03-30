@@ -21,8 +21,7 @@ function ChatContainer() {
     }).catch((error)=>{
         console.log("Error in setting messages (ChatContainer)",error);
     });
-    const message=listenForMessages(selectedUser);
-    if(message) dispatch(addMessage(message));
+    listenForMessages(selectedUser,dispatch);
     return () => dispatch(stopListeningForMessages());
   },[selectedUser,listenForMessages,stopListeningForMessages,getMessages,setMessages])
 
