@@ -50,7 +50,7 @@ function ChatContainer() {
                   {message.images && 
                     message.images.map( (image) =>{
                       return(
-                        <img src={image} alt="message image" className='w-48 h-48 object-cover rounded-lg'/>
+                        <img src={image} alt="message image" className='mb-4 w-48 h-48 object-cover rounded-lg'/>
                       )
                     })
                   }

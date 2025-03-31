@@ -10,6 +10,8 @@ import Chat from './components/Chat.jsx';
 import { getUser} from './services/auth';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
+import Setting from './components/Setting.jsx';
+import Loading from './components/Loading/Loading.jsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +40,13 @@ function App() {
     return <Home/>;
   }
 
+  const messages = [
+    "Loading your data...",
+    "Fetching resources...",
+    "Almost there...",
+    "Hang tight, we're preparing everything for you!"
+  ];
+
   return (
     <>
       <Routes>
@@ -46,6 +55,8 @@ function App() {
         <Route path="/signup" element={!checkUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/forgot" element={!checkUser ? <Forgot /> : <Navigate to="/" />} />
         <Route path="/chat" element={checkUser ? <Chat /> : <Navigate to="/login" />} />
+        <Route path="/chat/setting" element={<Setting/>} />
+        <Route path="/loading" element={<Loading messages={messages} />} />
       </Routes>
       <ToastContainer />
     </>

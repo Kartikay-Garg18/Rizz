@@ -1,4 +1,6 @@
 import React from 'react'
+import Setting from '../Setting';
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   const cl = "my-3 w-8 rounded-full cursor-pointer";
@@ -9,7 +11,9 @@ const Sidebar = () => {
             <img src="https://img.icons8.com/?size=100&id=118377&format=png&color=FFFFFF" alt="Chat icon" className={cl} />
             <img src="https://img.icons8.com/?size=100&id=9672&format=png&color=FFFFFF" alt="Explore icon" className={cl} />
             <img src="https://img.icons8.com/?size=100&id=vfXAPwB00Ntn&format=png&color=FFFFFF" alt="Call icon" className={cl} />
-            <img src="https://img.icons8.com/?size=100&id=364&format=png&color=FFFFFF" alt="Setting icon" className={cl} />
+            <Link to="/chat/setting">
+              <img  src="https://img.icons8.com/?size=100&id=364&format=png&color=FFFFFF" alt="Setting icon" className={cl} />
+            </Link>
           
         </div>
   )
