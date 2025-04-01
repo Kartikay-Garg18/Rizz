@@ -12,11 +12,19 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
 import Setting from './components/Setting.jsx';
 import Loading from './components/Loading/Loading.jsx';
+import { getUsers } from './services/chat.js';
+import { setUsers } from './store/chatSlice.js';
 
 function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const checkUser = useSelector((state) => state.auth.status);
+  const messages = [
+    "Loading your data...",
+    "Fetching resources...",
+    "Almost there...",
+    "Hang tight, we're preparing everything for you!"
+  ];
 
   useEffect(() => {
     if(!checkUser){
@@ -25,6 +33,11 @@ function App() {
           if (user) {
             dispatch(login(user));
             dispatch(connectSocket());
+            getUsers().then((users) => {
+              if (users) {
+                dispatch(setUsers(users));
+              }
+            })
           }
         })
         .catch((error) => {
@@ -37,15 +50,9 @@ function App() {
   }, [dispatch]);
 
   if (isLoading) {
-    return <Home/>;
+    return <Loading messages={messages} />;
   }
 
-  const messages = [
-    "Loading your data...",
-    "Fetching resources...",
-    "Almost there...",
-    "Hang tight, we're preparing everything for you!"
-  ];
 
   return (
     <>
@@ -55,8 +62,7 @@ function App() {
         <Route path="/signup" element={!checkUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/forgot" element={!checkUser ? <Forgot /> : <Navigate to="/" />} />
         <Route path="/chat" element={checkUser ? <Chat /> : <Navigate to="/login" />} />
-        <Route path="/chat/setting" element={<Setting/>} />
-        <Route path="/loading" element={<Loading messages={messages} />} />
+        <Route path="/chat/setting" element={checkUser ? <Setting/> : <Navigate to="/"/>} />
       </Routes>
       <ToastContainer />
     </>

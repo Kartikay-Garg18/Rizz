@@ -13,7 +13,6 @@ const getUsers = async () => {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-
         return users.data.data.filteredUsers;
     } catch (error) {
         console.error('Error in getUsers (services -> chat): ', error.message);

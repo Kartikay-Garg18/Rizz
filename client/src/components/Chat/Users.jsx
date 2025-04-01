@@ -10,13 +10,13 @@ const Users = () => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.chat.users);
 
-  useEffect(() => {
-    getUsers().then((users) => {
-      if (users) {
-        dispatch(setUsers(users));
-      }
-    })
-  }, [])
+  // useEffect(() => {
+  //   getUsers().then((users) => {
+  //     if (users) {
+  //       dispatch(setUsers(users));
+  //     }
+  //   })
+  // }, [])
 
   const cl = 'p-2 h-[10%] w-[100%] text-white text-xl flex items-center justify-start cursor-pointer rounded-2xl pl-3';
   return (
