@@ -19,12 +19,6 @@ function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const checkUser = useSelector((state) => state.auth.status);
-  const messages = [
-    "Loading your data...",
-    "Fetching resources...",
-    "Almost there...",
-    "Hang tight, we're preparing everything for you!"
-  ];
 
   useEffect(() => {
     if(!checkUser){
@@ -50,9 +44,8 @@ function App() {
   }, [dispatch]);
 
   if (isLoading) {
-    return <Loading messages={messages} />;
+    return <Loading/>;
   }
-
 
   return (
     <>
