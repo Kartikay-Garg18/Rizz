@@ -5,6 +5,7 @@ import { googleLogin as login } from '../../services/auth'
 import { login as authLogin ,connectSocket} from '../../store/authSlice'
 import Google from '../../assets/Google.svg'
 import { useNavigate } from 'react-router-dom'
+import { getUsers } from '../../services/chat'
 
 const GoogleLogin = () => {
     const dispatch = useDispatch();
@@ -15,7 +16,7 @@ const GoogleLogin = () => {
                 const result = await login(authResult['code']);
                 dispatch(authLogin(result))
                 dispatch(connectSocket());
-                navigate('/chat');
+                getUsers(dispatch)
             }
         } catch (error) {
             console.error(error);

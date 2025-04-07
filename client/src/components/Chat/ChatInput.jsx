@@ -14,6 +14,7 @@ function ChatInput() {
   const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
+    setImages([]);
     const files = Array.from(e.target.files);
     const imageFiles = files.filter(file => file.type.startsWith('image'));
 
@@ -22,13 +23,11 @@ function ChatInput() {
       return;
     }
 
-    imageFiles.map(file => {
-      setImages(prevImages => [...prevImages, file])
-    });
+    setImages(imageFiles);
   };
 
   const removeImage = (index) => {
-    setImages(images.filter((i) => i !== index));
+    setImages(images.filter((_,idx) => idx !== index));
     if (imgInputField.current && images.length === 0) imgInputField.current.value = null;
   };
 
@@ -46,6 +45,14 @@ function ChatInput() {
     if (imgInputField.current) imgInputField.current.value = null;
   };
 
+  const handleUploadClick = () => {
+    if(imgInputField.current){
+      imgInputField.current.value = null;
+    }
+
+    imgInputField.current?.click();
+  }
+
   return (
     <div className='fixed bottom-3 w-[72%]'>
       <div className='flex flex-wrap gap-2'>
@@ -56,27 +63,28 @@ function ChatInput() {
           </div>
         ))}
       </div>
-      <form onSubmit={handleSendMessage} className='flex items-center w-full justify-between'>
-        <button className='mx-2 h-14 text-white rounded-full w-fit'>
+      <div className='flex items-center w-full justify-between'>
+        <div className='mx-2 h-14 text-white rounded-full w-fit'>
           <input id='image' type="file" multiple ref={imgInputField} accept="image/*" onChange={handleImageChange} className='hidden' />
-          <label htmlFor="image" onClick={() => { imgInputField.current?.click() }}>
+          <button onClick={handleUploadClick}>
             <img src={upload} className='size-10 rounded-full cursor-pointer' />
-          </label>
-        </button>
+          </button>
+        </div>
 
+        <form onSubmit={handleSendMessage} className='flex items-center justify-center w-full'>
         <input type="text"
           className='p-4 h-[75%] bg-slate-950 opacity-35 text-white rounded-full w-full'
           placeholder='Type a message'
           value={text}
           name='text'
           onChange={(e) => { setText(e.target.value) }} />
-
         <button
           className={`ml-2 h-14 text-white rounded-full cursor-pointer w-fit ${!text.trim() && images.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
           type='submit'>
           <img src={send} alt="send icon" className='size-10 rounded-full' />
         </button>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }

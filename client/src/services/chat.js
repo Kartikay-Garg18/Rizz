@@ -1,19 +1,20 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import { socket } from '../store/authSlice';
-import { addMessage } from '../store/chatSlice';
+import { addMessage, setUsers } from '../store/chatSlice';
 
 const API_URI = import.meta.env.VITE_APP_API_URI;
 const accessToken = Cookies.get('accessToken');
 
-const getUsers = async () => {
+const getUsers = async (dispatch) => {
     try {
         const users = await axios.get(`${API_URI}/messages/user`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-        return users.data.data.filteredUsers;
+        const userList =  users.data.data.filteredUsers;
+        dispatch(setUsers(userList));
     } catch (error) {
         console.error('Error in getUsers (services -> chat): ', error.message);
     }

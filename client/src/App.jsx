@@ -13,7 +13,6 @@ import Home from './components/Home';
 import Setting from './components/Setting.jsx';
 import Loading from './components/Loading/Loading.jsx';
 import { getUsers } from './services/chat.js';
-import { setUsers } from './store/chatSlice.js';
 
 function App() {
   const dispatch = useDispatch();
@@ -21,27 +20,21 @@ function App() {
   const checkUser = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    if(!checkUser){
-      getUser()
-        .then((user) => {
-          if (user) {
-            dispatch(login(user));
-            dispatch(connectSocket());
-            getUsers().then((users) => {
-              if (users) {
-                dispatch(setUsers(users));
-              }
-            })
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to fetch user:', error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+    try {
+     getUser().then(user => {
+        if (user) {
+          dispatch(login(user));
+          dispatch(connectSocket());
+          getUsers(dispatch);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
     }
-  }, [dispatch]);
+    finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, checkUser]);
 
   if (isLoading) {
     return <Loading/>;

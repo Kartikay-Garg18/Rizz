@@ -1,22 +1,14 @@
 import React from 'react'
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedUser, setUsers } from '../../store/chatSlice';
-import { getUsers } from '../../services/chat';
 import profile from '../../assets/ProfilePhoto.jpg' ;
+import { getUsers } from '../../services/chat';
 
 
 const Users = () => {
   const dispatch = useDispatch();
+  getUsers(dispatch);
   const users = useSelector(state => state.chat.users);
-
-  // useEffect(() => {
-  //   getUsers().then((users) => {
-  //     if (users) {
-  //       dispatch(setUsers(users));
-  //     }
-  //   })
-  // }, [])
 
   const cl = 'p-2 h-[10%] w-[100%] text-white text-xl flex items-center justify-start cursor-pointer rounded-2xl pl-3';
   return (

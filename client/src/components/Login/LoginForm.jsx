@@ -8,10 +8,9 @@ import Email from "../../assets/Email.svg";
 import Lock from "../../assets/Lock.svg";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLogin from "./GoogleLogin";
+import { getUsers } from "../../services/chat";
 
 const LoginForm = () => {
-  const gradient = true;
-  const blur = true;
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ const LoginForm = () => {
       }
       dispatch(authLogin(user));
       dispatch(connectSocket());
-      navigate("/chat");
+      getUsers(dispatch);
     } catch (e) {
       console.error(e);
     }

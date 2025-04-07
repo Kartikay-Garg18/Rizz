@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../../public/favicon.png';
+import logo from '../../favicon.png';
 import profile from '../../assets/ProfilePhoto.jpg';
 import { Link } from 'react-router-dom';
 
