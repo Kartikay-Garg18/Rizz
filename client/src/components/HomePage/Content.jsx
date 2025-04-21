@@ -7,7 +7,7 @@ function Content() {
             <div className='border border-l-0 border-r-0 border-t-0 border-b-gray-700 border-b-2'></div>
 
             <div className="m-2 h-[80vh] w-[99%]  flex justify-center items-center">
-                <div className='m-2 h-[80vh] w-[49%]  flex justify-center items-center text-7xl font-bold'>
+                <div className='m-2 h-[80vh] w-[49%]  flex justify-center items-center text-7xl font-bold animate-pulse'>
                     <h1>Welcome To RIZZ</h1>
                 </div>
                 <div className='m-2 h-[80vh] w-[50%] '>

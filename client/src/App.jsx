@@ -13,6 +13,7 @@ import Home from './components/Home';
 import Setting from './components/Setting.jsx';
 import Loading from './components/Loading/Loading.jsx';
 import { getUsers } from './services/chat.js';
+import Calling from './components/Calling.jsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -49,6 +50,7 @@ function App() {
         <Route path="/forgot" element={!checkUser ? <Forgot /> : <Navigate to="/" />} />
         <Route path="/chat" element={checkUser ? <Chat /> : <Navigate to="/login" />} />
         <Route path="/chat/setting" element={checkUser ? <Setting/> : <Navigate to="/"/>} />
+        <Route path="/chat/calling" element={checkUser ? <Calling/> : <Navigate to="/"/>} />
       </Routes>
       <ToastContainer />
     </>

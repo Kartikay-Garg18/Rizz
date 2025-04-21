@@ -17,7 +17,7 @@ const Home = () => {
     }
 
   return (
-    <div className='container'>
+    <div className='container font-pop'>
         <Header></Header>
         <Main></Main>
         <Footer></Footer>
