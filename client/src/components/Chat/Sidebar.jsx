@@ -8,6 +8,10 @@ const Sidebar = () => {
 
     <div className='px-4 py-4 bg-gray-950 opacity-65 w-fit overflow-y-aut flex justify-start items-center flex-col border-r border-gray-300'>
 
+            <Link to="/">
+              <img src="https://img.icons8.com/?size=100&id=43699&format=png&color=FFFFFF" alt="Home icon"
+              className={cl} />
+            </Link>
             <Link to="/chat">
               <img src="https://img.icons8.com/?size=100&id=118377&format=png&color=FFFFFF" alt="Chat icon" className={cl} />
             </Link>

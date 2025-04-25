@@ -80,11 +80,6 @@ function Setting() {
 
             <div className="w-full border-t border-gray-300 my-4"></div>
 
-            <div className='px-4 relative group'>
-              <span>Accounts</span>
-              <input type="email" className='mx-4 px-2 bg-white border' value={user.email} />
-            </div>
-
             <button className='mx-3 mt-4 mb-2 px-2 text-lg btn btn-floating bg-gray-400 text-white' onClick={handleLogout}>
               Logout
             </button>
