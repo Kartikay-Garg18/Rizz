@@ -30,4 +30,8 @@ app.use(session({
 app.use('/auth', userRouter);
 app.use('/messages', messageRouter);
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the Chat Application API');
+});
+
 export default app;
