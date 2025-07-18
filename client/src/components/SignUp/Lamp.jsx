@@ -1,127 +1,53 @@
-import React, {useState, useMemo, useEffect} from "react";
-import { motion } from "framer-motion";
-import { cn } from "../../utils/utils";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
+const words = ["Game", "Chat", "Vibe", "Connection", "Experience"];
 
 export function Lamp() {
   const [idx, setIdx] = useState(0);
-      const words = useMemo(() => ['Game', 'Chat', 'Vibe', 'Connection', 'Experience'], []);
-      useEffect(()=>{
-          const timeout = setTimeout(()=>{
-              if(idx === words.length-1){
-                  setIdx(0);
-              } else{
-                  setIdx(idx+1);
-              }
-          }, 2000);
-          return () => clearTimeout(timeout);
-      }, [idx, words]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIdx((i) => (i + 1) % words.length);
+    }, 1800);
+    return () => clearTimeout(timeout);
+  }, [idx]);
+
   return (
-    (<LampContainer>
-      <motion.h1
-        initial={{ opacity: 0.5, y: 100 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.3,
-          duration: 1.3,
-          ease: "easeInOut",
-        }}
-        className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
-        >
-        <div className='relative flex justify-center items-center h-80 flex-col font-pop text-white w-[100vw]'>
-            <span className='font-semibold text-4xl text-center my-2'>Redefining</span>
-            <span 
-            className='pt-3 relative flex w-full justify-center items-start overflow-hidden text-center font-bold text-8xl h-full'>
-                {words.map((word, index)=>(
-                    <motion.span key={index} className='absolute'
-                    initial={{ opacity: 0, y: "-100" }} transition={{type: "spring", stiffness: 50}}
-                    animate={idx === index ? { y: 0, opacity: 1} : { y: idx > index ? -150 : 160, opacity: 0}}
-                    > {word} </motion.span>
-                ))}
-            </span>
-        </div>
-      </motion.h1>
-    </LampContainer>)
+    <motion.div
+      className="relative py-12 md:py-0 flex flex-col items-center md:items-start justify-center w-full"
+      initial={{ y: 32, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.13, type: "spring" }}
+    >
+      <div className="absolute inset-0 left-[-15%] top-[22%] w-96 h-60 bg-purple-700 rounded-full blur-[90px] opacity-20 pointer-events-none -z-10" />
+      <span className="block text-2xl md:text-4xl font-semibold text-white mb-2 tracking-tight leading-relaxed drop-shadow-lg">
+        Redefining
+      </span>
+      <div style={{ minHeight: '88px' }} className="relative w-full">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={idx}
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -32 }}
+            transition={{ duration: 0.7, type: "spring" }}
+            className="
+              absolute left-0
+              font-extrabold tracking-tight
+              text-4xl sm:text-6xl md:text-7xl
+              bg-gradient-to-r from-purple-300 via-cyan-300 to-blue-400
+              bg-clip-text text-transparent
+              leading-tight
+              drop-shadow-lg
+              select-none
+            "
+          >
+            {words[idx]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      
+    </motion.div>
   );
 }
-
-export const LampContainer = ({
-  children,
-  className
-}) => {
-  return (
-    (<div
-      className={cn(
-        "relative flex min-h-screen flex-col items-center justify-end overflow-hidden w-full rounded-md z-0",
-        className
-      )}>
-      <div
-        className="relative flex w-full scale-y-125 items-center justify-center isolate z-0">
-        <motion.div
-          initial={{ opacity: 0.5, width: "15rem" }}
-          whileInView={{ opacity: 1, width: "30rem" }}
-          transition={{
-            delay: 0.3,
-            duration: 1.3,
-            ease: "easeInOut",
-          }}
-          style={{
-            backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-          }}
-          className="absolute inset-auto right-1/2 h-56 overflow-visible w-[30rem] bg-gradient-conic from-gray-500 via-transparent to-transparent text-white [--conic-position:from_60deg_at_center_top]">
-          <div
-            className="absolute  w-[100%] left-0 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-          <div
-            className="absolute  w-40 h-[100%] left-0  bottom-0 z-20 [mask-image:linear-gradient(to_right,white,transparent)]" />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0.5, width: "15rem" }}
-          whileInView={{ opacity: 1, width: "30rem" }}
-          transition={{
-            delay: 0.3,
-            duration: 1.3,
-            ease: "easeInOut",
-          }}
-          style={{
-            backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-          }}
-          className="absolute inset-auto left-1/2 h-56 w-[30rem] bg-gradient-conic from-transparent via-transparent to-gray-500 text-white [--conic-position:from_290deg_at_center_top]">
-          <div
-            className="absolute  w-40 h-[100%] right-0  bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
-          <div
-            className="absolute  w-[100%] right-0 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-        </motion.div>
-        <div
-          className="absolute top-1/2 h-48 w-full translate-y-12 scale-x-150 blur-2xl"></div>
-        <div
-          className="absolute top-1/2 z-50 h-48 w-full bg-transparent opacity-10 backdrop-blur-md"></div>
-        <div
-          className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-1/2 rounded-full bg-gray-500 opacity-50 blur-3xl"></div>
-        <motion.div
-          initial={{ width: "8rem" }}
-          whileInView={{ width: "16rem" }}
-          transition={{
-            delay: 0.3,
-            duration: 1.3,
-            ease: "easeInOut",
-          }}
-          className="absolute inset-auto z-30 h-36 w-64 -translate-y-[6rem] rounded-full bg-gray-400 blur-2xl"></motion.div>
-        <motion.div
-          initial={{ width: "15rem" }}
-          whileInView={{ width: "30rem" }}
-          transition={{
-            delay: 0.3,
-            duration: 1.3,
-            ease: "easeInOut",
-          }}
-          className="absolute inset-auto z-50 h-0.5 w-[30rem] -translate-y-[7rem] bg-gray-400"></motion.div>
-
-        <div
-          className="absolute inset-auto z-40 h-44 w-full -translate-y-[12.5rem] bg-gradient-to-r from-transparent via-slate-950 to-transparent"></div>
-      </div>
-      <div className="relative z-50 flex -translate-y-80 flex-col items-center px-5 top-44">
-        {children}
-      </div>
-    </div>)
-  );
-};

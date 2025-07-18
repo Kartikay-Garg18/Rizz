@@ -1,5 +1,5 @@
 import React from 'react'
-import { logout } from '../store/authSlice'
+import { disconnectSocket, logout } from '../store/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import Sidebar from './Chat/Sidebar'
 import ProfilePhoto from '../assets/ProfilePhoto.jpg'
@@ -8,6 +8,7 @@ function Setting() {
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const handleLogout = () => {
+    dispatch(disconnectSocket());
     dispatch(logout());
   }
 

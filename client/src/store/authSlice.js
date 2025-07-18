@@ -35,20 +35,59 @@ const authSlice = createSlice({
     }
 });
 
-
-export const connectSocket = () => (dispatch, getState) => {
+export const connectSocket = (userId) => (dispatch, getState) => {
+    // If userId is passed directly, use it; otherwise get from state
     const { auth } = getState();
-    if (!auth.user || socket) return;
-
-    socket = io(API_URI, { query: { userId: auth.user.id } });
-    socket.connect();
+    const userIdToUse = userId || auth.user?._id;
     
+    if (!userIdToUse || userIdToUse === 'undefined' || socket) {
+        console.log('Cannot connect socket - invalid user ID:', userIdToUse);
+        return;
+    }
+
+    console.log('Connecting socket with userId:', userIdToUse);
+
+    socket = io(API_URI, {
+        query: { userId: userIdToUse }, // Use the verified user ID
+        transports: ['polling', 'websocket'],
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+        timeout: 20000,
+        autoConnect: false
+    });
+
+    socket.on('connect', () => {
+        console.log('Connected to server:', socket.id);
+        console.log('User ID sent:', userIdToUse);
+    });
+
+    socket.on('disconnect', (reason) => {
+        console.log('Disconnected:', reason);
+        if (reason === 'io server disconnect') {
+            socket.connect();
+        }
+    });
+
+    socket.on('connect_error', (error) => {
+        console.log('Connection error:', error);
+    });
+
     socket.on('onlineUsers', (users) => {
         dispatch(setOnlineUsers(users));
     });
 
+    socket.connect();
 };
 
-export {socket};
+export const disconnectSocket = () => (dispatch) => {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+    }
+    dispatch(setOnlineUsers([]));
+};
+
+export { socket };
 export const { login, logout, setOnlineUsers } = authSlice.actions;
 export default authSlice.reducer;

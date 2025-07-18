@@ -62,6 +62,7 @@ const sendMessage=asyncHandler(async (req,res)=>{
         const images = req.files;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
+        
         const imageUrls = await uploadImages(images);
         const newMessage = new Message({
           senderId,
@@ -71,8 +72,9 @@ const sendMessage=asyncHandler(async (req,res)=>{
         });
     
         await newMessage.save();
-    
+        console.log(receiverId);
         const receiverSocketId = getSocketId(receiverId);
+        console.log(receiverSocketId)
         if (receiverSocketId) {
           io.to(receiverSocketId).emit("newMessage", newMessage);
         }
