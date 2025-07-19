@@ -1,8 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { SignUpForm } from './SignUp/SignUpForm';
 import { Lamp } from './SignUp/Lamp';
-
 
 const container = {
   animate: {
@@ -33,17 +31,17 @@ export default function SignUpPage() {
     >
       
       <motion.div variants={blobVariant}
-        className="absolute left-7 top-10 w-80 h-80 bg-[#7928ca88] opacity-30 rounded-3xl pointer-events-none z-0" />
+        className="absolute left-7 top-10 w-80 h-80 bg-[#7928ca88] opacity-30 rounded-3xl pointer-events-none z-0 hidden lg:block" />
       <motion.div variants={blobVariant}
-        className="absolute right-10 bottom-2 w-80 h-80 bg-[#f94cc27c] opacity-20 rounded-3xl pointer-events-none z-0" />
+        className="absolute right-10 bottom-2 w-80 h-80 bg-[#f94cc27c] opacity-20 rounded-3xl pointer-events-none z-0 hidden lg:block" />
 
-      <div className="relative z-10 flex flex-col-reverse md:flex-row items-center gap-16 w-full max-w-5xl mx-auto">
+      <div className="relative z-10 flex flex-col-reverse lg:flex-row items-center justify-center gap-16 lg:gap-20 w-full max-w-6xl mx-auto">
         
-        <motion.div variants={lampVariant} className="flex w-full md:w-[45%]">
+        <motion.div variants={lampVariant} className="hidden lg:flex w-full lg:w-[45%]">
           <Lamp />
         </motion.div>
         
-        <motion.div variants={formVariant} className="flex w-full md:w-[55%]">
+        <motion.div variants={formVariant} className="flex w-full lg:w-[55%] justify-center items-center my-16 md:my-20 lg:my-0">
           <SignUpForm />
         </motion.div>
       </div>
