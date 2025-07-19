@@ -1,3 +1,4 @@
+const { all } = require("axios");
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
@@ -56,6 +57,9 @@ module.exports = {
     },
   },
   plugins: [addVariablesForColors, require('daisyui')],
+  daisyui: {
+    themes: all
+  }
 };
 
 function addVariablesForColors({

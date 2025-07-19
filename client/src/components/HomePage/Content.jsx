@@ -25,7 +25,7 @@ function Content() {
     };
 
     return (
-        <main className="pt-24 pb-16 bg-transparent">
+        <main className="pt-24 lg:pb-16 bg-transparent">
             
             <motion.section
                 initial="hidden"
@@ -295,7 +295,7 @@ function Content() {
                     </motion.h2>
                     <motion.div
                         variants={itemVariants}
-                        className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                        className="flex flex-col sm:flex-row gap-7 justify-center items-center"
                     >
                         <motion.div
                             whileHover={{ scale: 1.05 }}
