@@ -1,25 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
-import { login as authLogin , connectSocket} from "../../store/authSlice";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { login as authLogin, connectSocket } from "../../store/authSlice";
 import { login } from "../../services/auth";
-import Email from "../../assets/Email.svg";
-import Lock from "../../assets/Lock.svg";
+import { FaEnvelope, FaLock, FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLogin from "./GoogleLogin";
 import { getUsers } from "../../services/chat";
+import { motion } from "framer-motion";
 
-const LoginForm = () => {
+export default function LoginForm() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
   const loginUser = async (data) => {
     try {
       const user = await login(data);
-      if (!user) {
-        throw new Error("Login failed");
-      }
+      if (!user) throw new Error("Login failed");
       dispatch(authLogin(user));
       dispatch(connectSocket());
       getUsers(dispatch);
@@ -29,80 +29,116 @@ const LoginForm = () => {
   };
 
   return (
-    <div
-      className="-mx-16 flex justify-end items-center w-screen h-screen bg-opacity-60 font-pop"  
+    <motion.div
+      className="
+        w-full max-w-lg 2xl:max-w-xl
+        border border-white/30
+        rounded-3xl
+        shadow-2xl
+        px-8 sm:px-12 py-14
+        flex flex-col items-center glassmorphic-card
+      "
+      style={{
+        background: 'rgba(255,255,255,0.16)',
+        backdropFilter: 'blur(28px)',
+        fontFamily: "Sora, sans-serif"
+      }}
+      initial={{ y: 60, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, delay: 0.23, type: "spring" }}
     >
-      <form
-        method="POST"
-        className="w-[25%] border bg-white flex flex-col gap-4 justify-center items-center p-7 rounded-xl shadow-xl bg-transparent backdrop-blur-sm m-11"
-        onSubmit={handleSubmit(loginUser)}
-      >
-        <div className="flex justify-between gap-2 items-center w-[90%]">
-          <img src={Email} alt="Email" className="w-6 opacity-70 absolute" />
+      <h2 className="w-full text-3xl md:text-4xl font-extrabold mb-1 text-center bg-gradient-to-r from-purple-500 via-pink-400 to-pink-600 bg-clip-text text-transparent">
+        Login
+      </h2>
+      <p className="mb-8 text-white/90 text-center text-base md:text-lg font-medium">
+        Welcome back to Rizz
+      </p>
+
+      <form onSubmit={handleSubmit(loginUser)} className="w-full grid gap-5">
+        
+        <div className="relative flex items-center border-b border-white/40 focus-within:border-pink-400 transition">
+          <FaEnvelope className="text-purple-200 mr-2" />
           <input
             type="email"
-            name="email"
-            id="email"
-            placeholder="Email"
+            aria-label="Email"
             {...register("email", { required: true })}
-            className="w-full pl-8 border-opacity-40 py-1 border-b bg-transparent border-black text-slate-950 focus:border-b focus: outline-none placeholder-black"
+            className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
+            placeholder="Email"
+            autoComplete="username"
+            required
           />
         </div>
 
-        <div className="flex justify-between gap-2 items-center w-[90%]">
-          <img src={Lock} alt="Password" className="w-6 opacity-70 absolute" />
+        
+        <div className="relative flex items-center border-b border-white/40 focus-within:border-pink-400 transition">
+          <FaLock className="text-purple-200 mr-2" />
           <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
+            type={showPassword ? "text" : "password"}
+            aria-label="Password"
             {...register("password", { required: true })}
-            className="w-full pl-8 border-opacity-40 py-1 border-b bg-transparent border-black text-slate-950 focus:border-b focus: outline-none placeholder-black"
+            className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
+            placeholder="Password"
+            autoComplete="current-password"
+            required
           />
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="ml-1 text-purple-200 hover:text-pink-400 transition"
+            onClick={() => setShowPassword((v) => !v)}
+          >
+            {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          </button>
         </div>
 
         <button
           type="submit"
-          className="border px-4 py-2 mt-3 bg-slate-950 text-white font-semibold w-[95%] rounded-lg"
+          className="
+            w-full mt-4 py-3 font-bold text-lg rounded-xl
+            bg-gradient-to-r from-purple-500 to-pink-500
+            text-white shadow-lg hover:scale-105 hover:shadow-xl transition
+          "
         >
           Sign In
         </button>
-
-        <span
-          className="cursor-pointer font-bold"
-          onClick={() => {
-            navigate("/forgot");
-          }}
-        >
-          Forgot Password?
-        </span>
-
-        <div className="flex justify-center items-center font-sans gap-2">
-          <p>Don&#8217;t have an account?</p>
-          <span
-            className="cursor-pointer font-bold"
-            onClick={() => {
-              navigate("/signup");
-            }}
-          >
-            Sign Up here
-          </span>
-        </div>
-
-        <div className="w-[85%] text-center border-b-2 border-gray-300 leading-[0.1em] my-3">
-          <span className="bg-white backdrop-blur-lg px-2">or</span>
-        </div>
-
-        <div className="flex justify-center items-center font-pop gap-2">
-          <GoogleOAuthProvider
-            clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}
-          >
-            <GoogleLogin />
-          </GoogleOAuthProvider>
-        </div>
       </form>
-    </div>
-  );
-};
 
-export default LoginForm;
+      
+      <div className="w-full flex justify-end mt-3">
+        <span
+          className="text-xs cursor-pointer font-semibold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text hover:underline transition"
+          onClick={() => navigate("/forgot")}
+        >
+          Forgot password?
+        </span>
+      </div>
+
+      
+      <div className="w-full flex items-center gap-2 my-5">
+        <hr className="flex-grow border-white/40" />
+        <span className="px-2 text-white/60">or</span>
+        <hr className="flex-grow border-white/40" />
+      </div>
+
+      
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}>
+        <div className="w-full flex justify-center">
+          <GoogleLogin />
+        </div>
+      </GoogleOAuthProvider>
+
+      
+      <div className="text-xs mt-4 text-center text-white/70">
+        Don't have an account?{" "}
+        <button
+          type="button"
+          className="font-semibold text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text hover:underline"
+          onClick={() => navigate("/signup")}
+        >
+          Sign Up
+        </button>
+      </div>
+    </motion.div>
+  );
+}

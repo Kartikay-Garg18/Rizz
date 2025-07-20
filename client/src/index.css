@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,3 +17,35 @@
     background-color: var(--bg-color);
     color: var(--text-color);
   }
+
+
+@keyframes wordFade {
+  0% { opacity: 0; transform: translateY(20px);}
+  30% { opacity:1; transform: translateY(0);}
+  70% { opacity:1; transform: translateY(0);}
+  100% {opacity: 0; transform: translateY(-20px);}
+}
+.animate-wordFade {
+  animation: wordFade 2s cubic-bezier(.66,0,.36,1);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px);}
+  50% { transform: translateY(-14px);}
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px);}
+  50% { transform: translateY(18px);}
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px) scale(1);}
+  50% { transform: translateY(10px) scale(1.16);}
+}
+.animate-float { animation: float 7s ease-in-out infinite; }
+.animate-float2 { animation: float2 9s ease-in-out infinite; }
+.animate-float3 { animation: float3 11s ease-in-out infinite; }
+.animate-pulse { animation: pulse 8s ease-in-out infinite; }
+@keyframes pulse {
+  0%,100% { opacity: .56;}
+  50% { opacity: .98;}
+}
