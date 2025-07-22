@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import { getUsers } from './services/chat';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import Home from './components/Home';
 import Login from './components/Login';
@@ -16,7 +18,15 @@ import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const checkUser = useSelector((state) => state.auth.status);
+  
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      getUsers(dispatch);
+    }
+  }, [user, dispatch]);
 
   return (
     <>

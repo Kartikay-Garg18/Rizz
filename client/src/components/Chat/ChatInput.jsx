@@ -1,92 +1,126 @@
-import React from 'react';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendMessage } from '../../services/chat';
-import { addMessage } from '../../store/chatSlice';
-import send from '../../assets/Send.png';
-import upload from '../../assets/Upload.png';
+import { addMessage, updateMessage } from '../../store/chatSlice';
+import { v4 as uuidv4 } from 'uuid';
 
-function ChatInput() {
+export default function ChatInput() {
+  const dispatch = useDispatch();
+  const selectedUser = useSelector((state) => state.chat.selectedUser);
+  const currentUser = useSelector((state) => state.auth.user);
+
   const [text, setText] = useState('');
   const [images, setImages] = useState([]);
-  const selectedUser = useSelector(state => state.chat.selectedUser);
-  const imgInputField = useRef(null);
-  const dispatch = useDispatch();
+  const imageInputRef = useRef(null);
 
   const handleImageChange = (e) => {
-    setImages([]);
     const files = Array.from(e.target.files);
-    const imageFiles = files.filter(file => file.type.startsWith('image'));
-
-    if (imageFiles.length !== files.length) {
-      alert('Please upload only image files');
-      return;
+    const imagesOnly = files.filter((file) => file.type.startsWith('image/'));
+    if (imagesOnly.length !== files.length) {
+      alert('Only image files are allowed.');
     }
-
-    setImages(imageFiles);
+    setImages(imagesOnly);
   };
 
-  const removeImage = (index) => {
-    setImages(images.filter((_,idx) => idx !== index));
-    if (imgInputField.current && images.length === 0) imgInputField.current.value = null;
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!text.trim() && images.length === 0) return;
-    const message = { text: text.trim(), images };
-    sendMessage(selectedUser._id, message).then((message) => {
-      dispatch(addMessage(message));
-    }).catch((error) => {
-      console.log(error);
-    });
-    setText('');
+  const clearImages = () => {
     setImages([]);
-    if (imgInputField.current) imgInputField.current.value = null;
+    if (imageInputRef.current) imageInputRef.current.value = null;
   };
 
-  const handleUploadClick = () => {
-    if(imgInputField.current){
-      imgInputField.current.value = null;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if ((!text.trim() && images.length === 0) || !selectedUser) return;
 
-    imgInputField.current?.click();
-  }
+    // Generate temp ID for optimistic UI update
+    const tempId = uuidv4();
+    
+    // Use normalized ID for consistency
+    const senderId = currentUser._id || currentUser.id;
+    
+    const tempMessage = {
+      _id: tempId,
+      senderId: senderId,
+      receiverId: selectedUser._id,
+      text: text.trim(),
+      images: images.map(img => ({ url: URL.createObjectURL(img), isUploading: true })),
+      createdAt: new Date().toISOString(),
+    };
+    
+    // Add to local state immediately for responsive UI
+    dispatch(addMessage(tempMessage));
+    
+    // Immediately clear the text and image previews from the input area
+    setText('');
+    clearImages();
+
+    try {
+      const message = { text: text.trim(), images };
+      const sentMessage = await sendMessage(selectedUser._id, message);
+      
+      // Update the temporary message with the server-confirmed version
+      dispatch(updateMessage({ tempId, finalMessage: sentMessage }));
+      
+      // No need to handle the socket event for our own sent message
+      // The socket will deliver it to the receiver only
+    } catch (error) {
+      // Handle the failed message state silently or display a user-friendly error
+    }
+  };
 
   return (
-    <div className='fixed bottom-3 w-[72%]'>
-      <div className='flex flex-wrap gap-2'>
-        {images.map((image, index) => (
-          <div key={index} className='h-12 w-14 flex justify-center items-center relative gap-2'>
-            <img src={URL.createObjectURL(image)} alt='Image Preview' className='w-12 h-12 object-cover rounded-full' />
-            <button onClick={() => removeImage(index)} className='absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-500'>X</button>
-          </div>
-        ))}
-      </div>
-      <div className='flex items-center w-full justify-between'>
-        <div className='mx-2 h-14 text-white rounded-full w-fit'>
-          <input id='image' type="file" multiple ref={imgInputField} accept="image/*" onChange={handleImageChange} className='hidden' />
-          <button onClick={handleUploadClick}>
-            <img src={upload} className='size-10 rounded-full cursor-pointer' />
-          </button>
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-center p-3 bg-indigo-900 shadow-lg rounded-t-lg">
+      {images.length > 0 && (
+        <div className="flex space-x-2 mr-4 max-w-full w-full mb-2 overflow-x-auto">
+          {images.map((img, i) => (
+            <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+              <img src={URL.createObjectURL(img)} alt={`attachment-${i}`} className="object-cover w-full h-full" />
+              <button
+                type="button"
+                onClick={() => {
+                  setImages(images.filter((_, idx) => idx !== i));
+                  if (imageInputRef.current && images.length === 1) {
+                    imageInputRef.current.value = null;
+                  }
+                }}
+                className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full px-1 text-xs"
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>
-
-        <form onSubmit={handleSendMessage} className='flex items-center justify-center w-full'>
-        <input type="text"
-          className='p-4 h-[75%] bg-slate-950 opacity-35 text-white rounded-full w-full'
-          placeholder='Type a message'
-          value={text}
-          name='text'
-          onChange={(e) => { setText(e.target.value) }} />
-        <button
-          className={`ml-2 h-14 text-white rounded-full cursor-pointer w-fit ${!text.trim() && images.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-          type='submit'>
-          <img src={send} alt="send icon" className='size-10 rounded-full' />
-        </button>
-        </form>
-      </div>
-    </div>
-  )
+      )}
+      <input
+        type="text"
+        placeholder="Type your message..."
+        className="flex-grow rounded-l-full px-4 py-3 bg-indigo-800 text-white focus:outline-none placeholder-indigo-300 min-w-0"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        ref={imageInputRef}
+        onChange={handleImageChange}
+        style={{ display: 'none' }}
+      />
+      <button
+        type="button"
+        className="px-3 py-3 rounded-r-full bg-pink-600 hover:bg-pink-500"
+        onClick={() => imageInputRef.current && imageInputRef.current.click()}
+        title="Upload images"
+      >
+        📎
+      </button>
+      <button
+        type="submit"
+        className="ml-2 px-5 py-3 rounded-full bg-purple-700 hover:bg-purple-600 text-white shadow-md"
+        aria-label="Send message"
+        disabled={(!text.trim() && images.length === 0) || !selectedUser}
+      >
+        ➤
+      </button>
+    </form>
+  );
 }
-
-export default ChatInput;

@@ -3,8 +3,11 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
 import {upload} from "../utils/cloudinary.js";
-import {getSocketId, io} from "../utils/socket.js";
+import {getSocketId, io, app, server} from "../utils/socket.js";
 import { GoogleUser } from "../models/googleuser.model.js";
+
+// Import userSocketMap for checking online status
+import { userSocketMap } from "../utils/socket.js";
 
 const getUsersForSidebar=asyncHandler(async (req,res)=>{
     try {
@@ -32,7 +35,6 @@ const getMessages=asyncHandler(async (req,res)=>{
 
     res.status(200).json(new ApiResponse(200,{messages},"Messages retrieved successfully"));
   } catch (error) {
-    console.log("Error in getMessages : ", error.message);
     res.status(500).json(new ApiResponse(500,'',"Internal server error" ));
   }
 });
@@ -72,16 +74,37 @@ const sendMessage=asyncHandler(async (req,res)=>{
         });
     
         await newMessage.save();
-        console.log(receiverId);
+        
+        // Try to get socket ID for the receiver 
         const receiverSocketId = getSocketId(receiverId);
-        console.log(receiverSocketId)
+        
+        // Convert IDs to strings for more reliable comparison
+        const receiverIdStr = receiverId.toString();
+        const senderIdStr = senderId.toString();
+        
+        // Emit to receiver if they're online
         if (receiverSocketId) {
-          io.to(receiverSocketId).emit("newMessage", newMessage);
+          // Make sure we send the complete message with string IDs to avoid ObjectId issues
+          const messageToSend = {
+            ...newMessage.toObject(),
+            senderId: senderIdStr,
+            receiverId: receiverIdStr
+          };
+          
+          io.to(receiverSocketId).emit("newMessage", messageToSend);
+        } else {
+          // Broadcast to make sure the message gets through
+          io.emit("newMessage", {
+            ...newMessage.toObject(),
+            senderId: senderIdStr,
+            receiverId: receiverIdStr
+          });
         }
+        
+        // We don't need to emit back to sender - the client already has the message
     
         res.status(201).json(new ApiResponse(201,{newMessage},"Message sent successfully"));
       } catch (error) {
-        console.log("Error in sendMessage : ", error.message);
         res.status(500).json(new ApiResponse(500,'',"Internal server error"));
       }
 });

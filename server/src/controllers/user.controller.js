@@ -93,7 +93,8 @@ const loginUser = asyncHandler(async (req, res) => {
     sameSite: "Strict",
   };
   const loggedInUser = {
-    id: checkUser._id,
+    _id: checkUser._id, // Use _id for consistency
+    id: checkUser._id,  // Keep id for backward compatibility
     email: checkUser.email,
     username: checkUser.username,
     profilePictureUrl: checkUser.profilePictureUrl,
@@ -145,7 +146,8 @@ const generateToken = async (id, db) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   const checkUser = req.user;
   const loggedInUser = {
-    id: checkUser._id,
+    _id: checkUser._id, // Use _id for consistency
+    id: checkUser._id,  // Keep id for backward compatibility
     email: checkUser.email,
     username: checkUser.username,
     profilePictureUrl: checkUser.profilePictureUrl,
@@ -193,7 +195,8 @@ const googleLoginUser = asyncHandler(async (req, res) => {
     sameSite: "Strict",
   };
   const loggedInUser = {
-    id: user._id,
+    _id: user._id, // Use _id for consistency
+    id: user._id,  // Keep id for backward compatibility
     email: email,
     username: name,
     profilePictureUrl: picture,

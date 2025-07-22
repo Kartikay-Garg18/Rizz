@@ -25,32 +25,40 @@ const getSocketId = (userId) => {
 };
 
 io.on("connection", (socket) => {
-    console.log("New client connected:", socket.id);
-    console.log("Full handshake query:", socket.handshake.query); // Debug log
-    
     const user = socket.handshake.query.userId;
-    console.log("User ID from handshake:", user);
     
     if (user && user !== 'undefined') {
+        // Store the socket ID for this user ID
         userSocketMap[user] = socket.id;
-        console.log(`User ${user} mapped to socket ${socket.id}`);
+        
+        // Store a normalized version without ObjectId prefix if it exists
+        if (user.includes('new ObjectId')) {
+            const cleanId = user.replace(/^ObjectId\(['"](.+)['"]\)$/, '$1');
+            userSocketMap[cleanId] = socket.id;
+        }
+        
         io.emit("onlineUsers", Object.keys(userSocketMap));
-    } else {
-        console.log("No valid user ID provided in handshake");
     }
 
-    socket.on("disconnect", (reason) => {
-        console.log(`Socket ${socket.id} disconnected: ${reason}`);
+    socket.on("disconnect", () => {
         if (user && user !== 'undefined') {
             delete userSocketMap[user];
-            console.log(`User ${user} removed from online users`);
-            io.emit("onlineUsers", Object.keys(userSocketMap));
+            // Add a small delay before broadcasting updated online users
+            // This helps prevent reconnection issues from affecting online status
+            setTimeout(() => {
+                io.emit("onlineUsers", Object.keys(userSocketMap));
+            }, 1000);
         }
     });
     
-    socket.on("error", (error) => {
-        console.log("Socket error:", error);
+    // Handle manual requests for online users list
+    socket.on("getOnlineUsers", () => {
+        socket.emit("onlineUsers", Object.keys(userSocketMap));
+    });
+    
+    socket.on("error", () => {
+        // Handle socket errors silently
     });
 });
 
-export { io, app, server, getSocketId };
+export { io, app, server, getSocketId, userSocketMap };

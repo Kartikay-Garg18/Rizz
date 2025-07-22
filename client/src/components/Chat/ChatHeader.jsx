@@ -1,35 +1,50 @@
-import React from 'react'
+import React from 'react';
 import { setSelectedUser } from '../../store/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import profile  from '../../assets/ProfilePhoto.jpg'
+import defaultProfile from '../../assets/ProfilePhoto.jpg';
 
-function ChatHeader() {
-  const selectedUser = useSelector(state => state.chat.selectedUser);
-  const onlineUsers = useSelector(state => state.auth.onlineUsers);
+export default function ChatHeader() {
   const dispatch = useDispatch();
+  const selectedUser = useSelector((state) => state.chat.selectedUser);
+  const onlineUsers = useSelector((state) => state.auth.onlineUsers);
+
+  if (!selectedUser) return null;
+
+  // Debug online users
+  console.log('Online users:', onlineUsers, 'Selected user:', selectedUser._id);
+  
+  // Convert to string to ensure consistent comparison
+  const isOnline = Array.isArray(onlineUsers) && onlineUsers.some(id => String(id) === String(selectedUser._id));
 
   return (
-      <div className="p-2.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-        <button className='m-1' onClick={() => dispatch(setSelectedUser(null))}>
-          <img src="https://cdn-icons-png.flaticon.com/512/109/109618.png" alt="close button" className='size-6 invert rounded-full'/>
+    <header className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-700 via-indigo-900 to-pink-600 shadow-md text-white">
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={() => dispatch(setSelectedUser(null))}
+          className="flex items-center justify-center w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full transition shadow-md mr-2"
+          aria-label="Close chat"
+          title="Exit chat"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
         </button>
-          <div className="avatar">
-            <div className="size-10 rounded-full relative">
-              <img src={selectedUser.profilePictureUrl || profile} alt={selectedUser.username}/>
-            </div>
-          </div>
-          <div>
-            <h3 className="font-medium">{selectedUser.username}</h3>
-            <p className="text-sm">
-              {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
-            </p>
-          </div>
+        <img
+          src={selectedUser.profilePicture || defaultProfile}
+          alt={selectedUser.username}
+          className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg"
+        />
+        <div>
+          <h2 className="text-xl font-semibold">{selectedUser.username}</h2>
+          <span
+            className={`text-sm font-semibold ${
+              isOnline ? 'text-green-400' : 'text-gray-400'
+            }`}
+          >
+            {isOnline ? 'Online' : 'Offline'}
+          </span>
         </div>
       </div>
-    </div>
-  )
+    </header>
+  );
 }
-
-export default ChatHeader

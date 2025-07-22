@@ -20,7 +20,14 @@ export default function LoginForm() {
     try {
       const user = await login(data);
       if (!user) throw new Error("Login failed");
-      dispatch(authLogin(user));
+      
+      // Ensure consistent user structure with _id property
+      const userData = { 
+        ...user,
+        _id: user.id || user._id // Use existing _id or id as _id
+      };
+      
+      dispatch(authLogin(userData));
       dispatch(connectSocket());
       getUsers(dispatch);
     } catch (e) {

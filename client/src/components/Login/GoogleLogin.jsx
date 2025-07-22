@@ -14,7 +14,12 @@ const GoogleLogin = () => {
         try {
             if(authResult['code']){
                 const result = await login(authResult['code']);
-                dispatch(authLogin(result))
+                // Ensure the user object has _id property for consistency
+                const userData = { 
+                    ...result,
+                    _id: result.id || result._id // Use existing _id or id as _id
+                };
+                dispatch(authLogin(userData))
                 dispatch(connectSocket());
                 getUsers(dispatch)
             }

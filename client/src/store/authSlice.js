@@ -38,14 +38,12 @@ const authSlice = createSlice({
 export const connectSocket = (userId) => (dispatch, getState) => {
     // If userId is passed directly, use it; otherwise get from state
     const { auth } = getState();
-    const userIdToUse = userId || auth.user?._id;
+    // Handle both _id and id cases
+    const userIdToUse = userId || auth.user?._id || auth.user?.id;
     
     if (!userIdToUse || userIdToUse === 'undefined' || socket) {
-        console.log('Cannot connect socket - invalid user ID:', userIdToUse);
         return;
     }
-
-    console.log('Connecting socket with userId:', userIdToUse);
 
     socket = io(API_URI, {
         query: { userId: userIdToUse }, // Use the verified user ID
@@ -56,21 +54,22 @@ export const connectSocket = (userId) => (dispatch, getState) => {
         timeout: 20000,
         autoConnect: false
     });
+    
+    // Make socket globally accessible for components
+    window.socket = socket;
 
     socket.on('connect', () => {
-        console.log('Connected to server:', socket.id);
-        console.log('User ID sent:', userIdToUse);
+        // Connection established
     });
 
     socket.on('disconnect', (reason) => {
-        console.log('Disconnected:', reason);
         if (reason === 'io server disconnect') {
             socket.connect();
         }
     });
 
-    socket.on('connect_error', (error) => {
-        console.log('Connection error:', error);
+    socket.on('connect_error', () => {
+        // Handle connection errors silently
     });
 
     socket.on('onlineUsers', (users) => {
@@ -78,6 +77,11 @@ export const connectSocket = (userId) => (dispatch, getState) => {
     });
 
     socket.connect();
+    
+    // Force request for online users after connection
+    socket.on('connect', () => {
+        socket.emit('getOnlineUsers');
+    });
 };
 
 export const disconnectSocket = () => (dispatch) => {
@@ -88,6 +92,9 @@ export const disconnectSocket = () => (dispatch) => {
     dispatch(setOnlineUsers([]));
 };
 
-export { socket };
+// Don't export the socket variable directly as it's mutable
+// Instead, provide a getter function
+export const getSocket = () => socket;
+
 export const { login, logout, setOnlineUsers } = authSlice.actions;
 export default authSlice.reducer;
