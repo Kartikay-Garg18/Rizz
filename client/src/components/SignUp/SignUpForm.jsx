@@ -3,10 +3,42 @@ import { FaUser, FaEnvelope, FaLock, FaRegEye, FaRegEyeSlash } from "react-icons
 import GoogleLogin from "../Login/GoogleLogin";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { createAccount } from "../../services/auth";
 
 export function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const navigate = useNavigate()
+  const { register, handleSubmit } = useForm();
+  
+  const createUser = async (data) => {
+    try {
+      const {username, email, password, confirmPassword} = data
+      if(password !== confirmPassword){
+        toast.error('Passwords do not match', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      await createAccount({username, email, password});
+
+      navigate('/login');
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <motion.div
       className="
@@ -40,6 +72,8 @@ export function SignUpForm() {
             className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
             placeholder="Username"
             autoComplete="username"
+            id="username"
+            {...register('username', { required: true })}
             required
           />
         </div>
@@ -49,7 +83,7 @@ export function SignUpForm() {
             type="email"
             aria-label="Email Address"
             className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
-            placeholder="Email Address"
+            id="email" placeholder='Email Address' {...register('email', { required: true })}
             autoComplete="email"
             required
           />
@@ -60,7 +94,7 @@ export function SignUpForm() {
             type={showPassword ? "text" : "password"}
             aria-label="Password"
             className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
-            placeholder="Password"
+            id="password" placeholder='Password' {...register('password', { required: true })}
             autoComplete="new-password"
             required
           />
@@ -80,7 +114,7 @@ export function SignUpForm() {
             type={showConfirm ? "text" : "password"}
             aria-label="Confirm Password"
             className="bg-transparent px-0 py-3 flex-1 text-white placeholder:text-purple-200 font-medium outline-none border-none"
-            placeholder="Confirm Password"
+            id="confirmPassword" placeholder='Confirm Password' {...register('confirmPassword', { required: true })}
             autoComplete="new-password"
             required
           />
@@ -100,7 +134,7 @@ export function SignUpForm() {
             w-full mt-4 py-3 font-bold text-lg rounded-xl
             bg-gradient-to-r from-purple-500 to-pink-500
             text-white shadow-lg hover:scale-105 hover:shadow-xl transition
-          ">
+          " onClick={handleSubmit(createUser)}>
           Sign Up
         </button>
       </form>
