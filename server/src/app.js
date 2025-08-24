@@ -30,6 +30,10 @@ app.use(session({
 app.use('/auth', userRouter);
 app.use('/messages', messageRouter);
 
+app.get('/loaderio-6584518794ee292037d0ffb2140a0594', (req, res) => {
+    res.send('loaderio-6584518794ee292037d0ffb2140a0594');
+})
+
 app.get('/', (req, res) => {
     res.send('Welcome to the Chat Application API');
 });
