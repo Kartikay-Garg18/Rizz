@@ -10,10 +10,8 @@ export default function ChatHeader() {
 
   if (!selectedUser) return null;
 
-  // Debug online users
   console.log('Online users:', onlineUsers, 'Selected user:', selectedUser._id);
   
-  // Convert to string to ensure consistent comparison
   const isOnline = Array.isArray(onlineUsers) && onlineUsers.some(id => String(id) === String(selectedUser._id));
 
   return (

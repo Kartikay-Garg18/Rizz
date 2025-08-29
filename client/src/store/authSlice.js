@@ -36,9 +36,7 @@ const authSlice = createSlice({
 });
 
 export const connectSocket = (userId) => (dispatch, getState) => {
-    // If userId is passed directly, use it; otherwise get from state
     const { auth } = getState();
-    // Handle both _id and id cases
     const userIdToUse = userId || auth.user?._id || auth.user?.id;
     
     if (!userIdToUse || userIdToUse === 'undefined' || socket) {
@@ -46,7 +44,7 @@ export const connectSocket = (userId) => (dispatch, getState) => {
     }
 
     socket = io(API_URI, {
-        query: { userId: userIdToUse }, // Use the verified user ID
+        query: { userId: userIdToUse },
         transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: 10,
@@ -55,11 +53,10 @@ export const connectSocket = (userId) => (dispatch, getState) => {
         autoConnect: false
     });
     
-    // Make socket globally accessible for components
     window.socket = socket;
 
     socket.on('connect', () => {
-        // Connection established
+        console.log('Socket connected');
     });
 
     socket.on('disconnect', (reason) => {
@@ -69,7 +66,7 @@ export const connectSocket = (userId) => (dispatch, getState) => {
     });
 
     socket.on('connect_error', () => {
-        // Handle connection errors silently
+        console.error('Socket connection error');
     });
 
     socket.on('onlineUsers', (users) => {
@@ -78,7 +75,6 @@ export const connectSocket = (userId) => (dispatch, getState) => {
 
     socket.connect();
     
-    // Force request for online users after connection
     socket.on('connect', () => {
         socket.emit('getOnlineUsers');
     });
@@ -92,8 +88,6 @@ export const disconnectSocket = () => (dispatch) => {
     dispatch(setOnlineUsers([]));
 };
 
-// Don't export the socket variable directly as it's mutable
-// Instead, provide a getter function
 export const getSocket = () => socket;
 
 export const { login, logout, setOnlineUsers } = authSlice.actions;

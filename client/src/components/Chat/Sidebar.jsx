@@ -2,10 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 const Sidebar = ({ isMobile, showInMobile }) => {
-  // Updated icon style with slightly larger size for better visibility
   const cl = "my-3 w-10 cursor-pointer hover:opacity-80 transition-all hover:scale-110";
   
-  // Navigation items array for easier management
   const navItems = [
     {
       to: "/chat",

@@ -1,4 +1,3 @@
-// src/services/chat.js
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { setUsers } from '../store/chatSlice';

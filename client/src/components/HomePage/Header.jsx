@@ -33,7 +33,6 @@ function Header() {
 
     return (
         <>
-            {/* Overlay background for mobile when hamburger menu is open */}
             {isMenuOpen && (
                 <div className="fixed top-0 left-0 w-full h-20 bg-slate-900/90 backdrop-blur-lg z-40 transition-all duration-150 md:hidden" />
             )}
@@ -51,7 +50,6 @@ function Header() {
                                 RIZZ
                             </h1>
                         </div>
-                        {/* Nav links: visible from md (768px) and up */}
                         <nav className="hidden md:flex items-center space-x-1">
                             {navigationItems.map((item) => (
                                 <a
@@ -68,7 +66,6 @@ function Header() {
                             ))}
                         </nav>
                         <div className="flex items-center space-x-4">
-                            {/* Get Started: visible from md and up */}
                             <Link to="/login" className="hidden md:inline-flex">
                                 <button
                                     className="relative px-6 py-3 text-lg font-semibold text-white overflow-hidden group rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
@@ -77,7 +74,6 @@ function Header() {
                                     <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </button>
                             </Link>
-                            {/* Hamburger: only visible below md */}
                             <button
                                 className="md:hidden p-2 text-gray-300 hover:text-white transition-colors duration-300 relative z-50"
                                 onClick={() => setIsMenuOpen(prev => !prev)}
@@ -90,7 +86,6 @@ function Header() {
                             </button>
                         </div>
                     </div>
-                    {/* Mobile dropdown nav: only visible below md */}
                     {isMenuOpen && (
                         <div className="md:hidden overflow-hidden z-50 relative">
                             <div className="px-4 py-6 space-y-4 backdrop-blur-sm bg-white/5 rounded-2xl mt-4 border border-white/10">

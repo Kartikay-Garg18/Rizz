@@ -1,4 +1,3 @@
-// Chat.jsx or App.jsx
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUsers } from '../services/chat';
@@ -12,7 +11,6 @@ export default function Chat() {
   const selectedUser = useSelector((state) => state.chat.selectedUser);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Check if device is mobile
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -30,10 +28,8 @@ export default function Chat() {
 
   return (
     <div className="flex min-h-screen h-screen w-screen bg-gradient-to-br from-purple-800 via-indigo-900 to-pink-700 overflow-hidden">
-      {/* Desktop sidebar - always visible on desktop */}
       {!isMobile && <Sidebar isMobile={false} />}
       
-      {/* Users list - takes full screen on mobile when no chat is selected, side panel on desktop */}
       <div className={`
         ${isMobile 
           ? selectedUser ? 'hidden' : 'w-full absolute inset-0 z-10' 
@@ -44,7 +40,6 @@ export default function Chat() {
         <Users isMobile={isMobile} />
       </div>
       
-      {/* Main chat area - only visible on mobile when a user is selected */}
       <main className={`
         flex-1 h-full flex items-center justify-center
         ${isMobile && !selectedUser ? 'hidden' : 'flex'}
@@ -59,7 +54,6 @@ export default function Chat() {
         )}
       </main>
       
-      {/* Mobile sidebar - only visible on mobile when no user is selected */}
       {isMobile && <Sidebar isMobile={true} showInMobile={!selectedUser} />}
     </div>
   );

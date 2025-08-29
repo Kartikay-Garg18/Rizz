@@ -31,10 +31,8 @@ export default function ChatInput() {
     e.preventDefault();
     if ((!text.trim() && images.length === 0) || !selectedUser) return;
 
-    // Generate temp ID for optimistic UI update
     const tempId = uuidv4();
     
-    // Use normalized ID for consistency
     const senderId = currentUser._id || currentUser.id;
     
     const tempMessage = {
@@ -46,10 +44,8 @@ export default function ChatInput() {
       createdAt: new Date().toISOString(),
     };
     
-    // Add to local state immediately for responsive UI
     dispatch(addMessage(tempMessage));
     
-    // Immediately clear the text and image previews from the input area
     setText('');
     clearImages();
 
@@ -57,11 +53,8 @@ export default function ChatInput() {
       const message = { text: text.trim(), images };
       const sentMessage = await sendMessage(selectedUser._id, message);
       
-      // Update the temporary message with the server-confirmed version
       dispatch(updateMessage({ tempId, finalMessage: sentMessage }));
       
-      // No need to handle the socket event for our own sent message
-      // The socket will deliver it to the receiver only
     } catch (error) {
       // Handle the failed message state silently or display a user-friendly error
     }

@@ -5,8 +5,6 @@ import { Message } from "../models/message.model.js";
 import {upload} from "../utils/cloudinary.js";
 import {getSocketId, io, app, server} from "../utils/socket.js";
 import { GoogleUser } from "../models/googleuser.model.js";
-
-// Import userSocketMap for checking online status
 import { userSocketMap } from "../utils/socket.js";
 
 const getUsersForSidebar=asyncHandler(async (req,res)=>{
@@ -44,7 +42,6 @@ const uploadImages = async (images) => {
       if (images.length !==0) {
         await images.map(async (image)=>{
           let uploadResponse = upload(image.path);
-          // imageUrls.push(uploadResponse.secure_url);
           imageUrls.push(uploadResponse);
         })
       }
@@ -75,16 +72,12 @@ const sendMessage=asyncHandler(async (req,res)=>{
     
         await newMessage.save();
         
-        // Try to get socket ID for the receiver 
         const receiverSocketId = getSocketId(receiverId);
         
-        // Convert IDs to strings for more reliable comparison
         const receiverIdStr = receiverId.toString();
         const senderIdStr = senderId.toString();
         
-        // Emit to receiver if they're online
         if (receiverSocketId) {
-          // Make sure we send the complete message with string IDs to avoid ObjectId issues
           const messageToSend = {
             ...newMessage.toObject(),
             senderId: senderIdStr,
@@ -93,7 +86,6 @@ const sendMessage=asyncHandler(async (req,res)=>{
           
           io.to(receiverSocketId).emit("newMessage", messageToSend);
         } else {
-          // Broadcast to make sure the message gets through
           io.emit("newMessage", {
             ...newMessage.toObject(),
             senderId: senderIdStr,
@@ -101,7 +93,6 @@ const sendMessage=asyncHandler(async (req,res)=>{
           });
         }
         
-        // We don't need to emit back to sender - the client already has the message
     
         res.status(201).json(new ApiResponse(201,{newMessage},"Message sent successfully"));
       } catch (error) {

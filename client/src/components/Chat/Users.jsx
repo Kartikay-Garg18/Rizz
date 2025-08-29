@@ -1,4 +1,3 @@
-// Users.jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedUser } from '../../store/chatSlice';
