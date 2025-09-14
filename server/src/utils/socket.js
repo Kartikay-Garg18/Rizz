@@ -8,12 +8,13 @@ const userSocketMap = {};
 
 const io = new Server(server, {
     cors: {
-        origin: [
-            "http://localhost:5173", 
-            process.env.CORS_ORIGIN || "https://rizz-frontend-two.vercel.app"
+        origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
+            "http://localhost:5173",
+            "https://rizz-frontend-two.vercel.app"
         ],
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
     },
     transports: ['websocket', 'polling'],
     pingTimeout: 60000,

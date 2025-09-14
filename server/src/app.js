@@ -6,13 +6,18 @@ import cors from 'cors'
 import {app} from './utils/socket.js'
 
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || "https://rizz-frontend-two.vercel.app",
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [
+        "http://localhost:5173",
+        "https://rizz-frontend-two.vercel.app"
+    ],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    optionsSuccessStatus: 200
 }
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: '50mb' }));
 
