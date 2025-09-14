@@ -1,4 +1,3 @@
-import React from 'react'
 import {useGoogleLogin} from '@react-oauth/google'
 import { useDispatch } from 'react-redux'
 import { googleLogin as login } from '../../services/auth'

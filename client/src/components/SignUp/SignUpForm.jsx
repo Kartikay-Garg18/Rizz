@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import GoogleLogin from "../Login/GoogleLogin";
 import { GoogleOAuthProvider } from "@react-oauth/google";

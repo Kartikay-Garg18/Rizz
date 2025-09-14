@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendMessage } from '../../services/chat';
 import { addMessage, updateMessage } from '../../store/chatSlice';

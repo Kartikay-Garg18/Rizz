@@ -3,8 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
 import {upload} from "../utils/cloudinary.js";
-import {getSocketId, io, app, server} from "../utils/socket.js";
-import { userSocketMap } from "../utils/socket.js";
+import {getSocketId, io} from "../utils/socket.js";
 
 const getUsersForSidebar=asyncHandler(async (req,res)=>{
     try {

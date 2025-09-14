@@ -1,6 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
+import { addMessageToUser } from './chatSlice';
+
 const API_URI = import.meta.env.VITE_APP_API_URI;
 
 const initialState = {
@@ -74,6 +76,21 @@ export const connectSocket = (userId) => (dispatch, getState) => {
 
     socket.on('onlineUsers', (users) => {
         dispatch(setOnlineUsers(users));
+    });
+    socket.on('newMessage', (message) => {
+        const currentUser = auth.user;
+        if (!currentUser) return;
+        
+        const msgSenderId = String(message.senderId);
+        const msgReceiverId = String(message.receiverId);
+        const currentUserId = String(currentUser._id || currentUser.id);
+        
+        if (msgReceiverId === currentUserId) {
+            dispatch(addMessageToUser({ 
+                message, 
+                userId: msgSenderId
+            }));
+        }
     });
 
     socket.connect();

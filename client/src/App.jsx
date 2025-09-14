@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import { getUsers } from './services/chat';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +13,6 @@ import Forgot from './components/Forgot';
 import Chat from './components/Chat';
 import Setting from './components/Setting';
 import Calling from './components/Calling';
-import Loading from './components/Loading/Loading';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {

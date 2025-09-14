@@ -1,4 +1,3 @@
-import app from './app.js'
 import connectDB from "./db/index.js";
 import dotenv from "dotenv";
 import {server} from './utils/socket.js'

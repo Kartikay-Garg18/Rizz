@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import { toast, Bounce } from 'react-toastify'
 import { forgotPassword, resetPassword } from '../services/auth';
 import OtpInput from './Forgot/OtpInput';

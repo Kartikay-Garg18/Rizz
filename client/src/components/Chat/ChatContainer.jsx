@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,7 +18,7 @@ export default function ChatContainer() {
   } : null;
   
   const messagesByUser = useSelector(state => state.chat.messagesByUser);
-  const messages = selectedUser ? messagesByUser[selectedUser._id] || [] : [];
+  const messages = selectedUser ? messagesByUser[String(selectedUser._id)] || [] : [];
   const lastMessageRef = useRef(null);
   
   const [modalImage, setModalImage] = useState(null);
@@ -26,52 +26,17 @@ export default function ChatContainer() {
   useEffect(() => {
     if (!selectedUser) return;
     
-    if (!messagesByUser[selectedUser._id]) {
+    const selectedUserId = String(selectedUser._id);
+    
+    if (!messagesByUser[selectedUserId]) {
       dispatch(setMessagesLoading(true));
       getMessages(selectedUser._id).then(msgs => {
-        dispatch(setMessagesForUser({ userId: selectedUser._id, messages: msgs }));
+        dispatch(setMessagesForUser({ userId: selectedUserId, messages: msgs }));
       });
     }
   }, [selectedUser, dispatch, messagesByUser]);
   
   useEffect(() => {
-    const socket = window.socket;
-    
-    if (socket) {
-      const handleNewMessage = (message) => {
-        const msgSenderId = String(message.senderId);
-        const msgReceiverId = String(message.receiverId);
-        const currentUserId = normalizedCurrentUser ? String(normalizedCurrentUser._id) : '';
-        const selectedUserId = selectedUser ? String(selectedUser._id) : null;
-        
-        if (selectedUserId && message._id) {
-          const isRelevantToCurrentChat = 
-              (msgSenderId === currentUserId && msgReceiverId === selectedUserId) ||
-              (msgSenderId === selectedUserId && msgReceiverId === currentUserId);
-              
-          if (isRelevantToCurrentChat) {
-            const isFromCurrentUser = msgSenderId === currentUserId;
-            
-            if (!isFromCurrentUser) {
-              const existingMessage = messages.find(m => 
-                String(m._id) === String(message._id)
-              );
-              
-              if (!existingMessage) {
-                dispatch(addMessage(message));
-              }
-            }
-          }
-        }
-      };
-      
-      socket.off('newMessage');
-      socket.on('newMessage', handleNewMessage);
-      
-      return () => {
-        socket.off('newMessage', handleNewMessage);
-      };
-    }
   }, [selectedUser, dispatch, normalizedCurrentUser, messages]);
 
   useEffect(() => {

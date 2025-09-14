@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { toast, Bounce } from 'react-toastify'
 
 const OtpInput = ({email, otp, expiry, setShowOtp, setShowPassword}) => {

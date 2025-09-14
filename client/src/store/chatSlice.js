@@ -29,28 +29,39 @@ const chatSlice = createSlice({
     },
     setMessagesForUser(state, action) {
       const { userId, messages } = action.payload
-      state.messagesByUser[userId] = messages
+      const userIdStr = String(userId)
+      
+      const formattedMessages = messages.map(msg => ({
+        ...msg,
+        senderId: String(msg.senderId),
+        receiverId: String(msg.receiverId)
+      }))
+      
+      state.messagesByUser[userIdStr] = formattedMessages
       state.loading.messages = false
     },
     addMessage(state, action) {
       const message = action.payload;
+      const currentUser = state.selectedUser;
       
       const senderId = String(message.senderId);
       const receiverId = String(message.receiverId);
       
       let chatUserId;
       
-      if (state.selectedUser) {
-        chatUserId = String(state.selectedUser._id);
+      if (currentUser) {
+        chatUserId = String(currentUser._id);
       } else {
-        const allUserIds = Object.keys(state.messagesByUser);
-        
-        if (allUserIds.includes(receiverId)) {
-          chatUserId = receiverId;
-        } else if (allUserIds.includes(senderId)) {
-          chatUserId = senderId;
-        } else {
-          chatUserId = receiverId;
+        chatUserId = receiverId;
+      }
+      
+      if (currentUser) {
+        const currentUserId = String(currentUser._id);
+        const isRelevantToCurrentChat = 
+          (senderId === currentUserId) || (receiverId === currentUserId);
+          
+        if (!isRelevantToCurrentChat) {
+          return;
         }
       }
 
@@ -62,7 +73,6 @@ const chatSlice = createSlice({
         if (m._id && message._id && String(m._id) === String(message._id)) {
           return true;
         }
-        
         return false;
       });
       
@@ -97,9 +107,29 @@ const chatSlice = createSlice({
         }
       }
     },
+    addMessageToUser(state, action) {
+      const { message, userId } = action.payload;
+      
+      const chatUserId = String(userId);
+      
+      if (!state.messagesByUser[chatUserId]) {
+        state.messagesByUser[chatUserId] = [];
+      }
+      
+      const isDuplicate = state.messagesByUser[chatUserId].some(m => {
+        if (m._id && message._id && String(m._id) === String(message._id)) {
+          return true;
+        }
+        return false;
+      });
+      
+      if (!isDuplicate) {
+        state.messagesByUser[chatUserId].push(message);
+      }
+    },
   },
 });
 
-export const { setUsers, setUsersLoading, setSelectedUser, setMessagesLoading, setMessagesForUser, addMessage, updateMessage } = chatSlice.actions;
+export const { setUsers, setUsersLoading, setSelectedUser, setMessagesLoading, setMessagesForUser, addMessage, addMessageToUser, updateMessage } = chatSlice.actions;
 
 export default chatSlice.reducer

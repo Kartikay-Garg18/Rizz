@@ -1,5 +1,3 @@
-import React from 'react'
-
 function NoChatSelected() {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center gap-5 bg-white/10 backdrop-blur-lg shadow-2xl p-8">

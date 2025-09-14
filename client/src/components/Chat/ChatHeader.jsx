@@ -1,4 +1,3 @@
-import React from 'react';
 import { setSelectedUser } from '../../store/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultProfile from '../../assets/ProfilePhoto.jpg';
