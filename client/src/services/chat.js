@@ -1,16 +1,18 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { setUsers } from '../store/chatSlice';
+import { setUsers, setUsersLoading } from '../store/chatSlice';
 
 const API_URI = import.meta.env.VITE_APP_API_URI;
-const accessToken = Cookies.get('accessToken');
 
 export const getUsers = async (dispatch) => {
   const accessToken = Cookies.get('accessToken');
   if (!accessToken) {
-    dispatch(setUsers([])); // clear users
+    dispatch(setUsers([]));
     return;
   }
+  
+  dispatch(setUsersLoading(true));
+  
   try {
     const response = await axios.get(`${API_URI}/messages/user`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -26,6 +28,10 @@ export const getUsers = async (dispatch) => {
 };
 
 export const getMessages = async (userId) => {
+  const accessToken = Cookies.get('accessToken');
+  if (!accessToken) {
+    return [];
+  }
   try {
     const response = await axios.get(`${API_URI}/messages/${userId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -37,6 +43,10 @@ export const getMessages = async (userId) => {
 };
 
 export const sendMessage = async (receiverId, message) => {
+  const accessToken = Cookies.get('accessToken');
+  if (!accessToken) {
+    throw new Error('No access token');
+  }
   try {
     const formData = new FormData()
     formData.append('text', message.text)

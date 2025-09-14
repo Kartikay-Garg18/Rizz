@@ -4,17 +4,18 @@ import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
 import {upload} from "../utils/cloudinary.js";
 import {getSocketId, io, app, server} from "../utils/socket.js";
-import { GoogleUser } from "../models/googleuser.model.js";
 import { userSocketMap } from "../utils/socket.js";
 
 const getUsersForSidebar=asyncHandler(async (req,res)=>{
     try {
         const loggedInUserId = req.user._id;
-        let filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
-        filteredUsers = [...filteredUsers,... await GoogleUser.find({ _id: { $ne: loggedInUserId } }).select("-password")];
+        
+        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } })
+            .select("-password -refreshToken -googleId")
+            .lean();
+        
         res.status(200).json(new ApiResponse(200,{filteredUsers},"Users fetched successfully"));
       } catch (error) {
-        console.error("Error in getUsersForSidebar: ", error.message);
         res.status(500).json(new ApiResponse(500,"","Internal server error"));
       }
 });
@@ -77,20 +78,14 @@ const sendMessage=asyncHandler(async (req,res)=>{
         const receiverIdStr = receiverId.toString();
         const senderIdStr = senderId.toString();
         
+        const messageToSend = {
+          ...newMessage.toObject(),
+          senderId: senderIdStr,
+          receiverId: receiverIdStr
+        };
+        
         if (receiverSocketId) {
-          const messageToSend = {
-            ...newMessage.toObject(),
-            senderId: senderIdStr,
-            receiverId: receiverIdStr
-          };
-          
           io.to(receiverSocketId).emit("newMessage", messageToSend);
-        } else {
-          io.emit("newMessage", {
-            ...newMessage.toObject(),
-            senderId: senderIdStr,
-            receiverId: receiverIdStr
-          });
         }
         
     

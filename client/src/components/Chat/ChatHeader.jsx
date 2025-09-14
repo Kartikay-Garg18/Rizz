@@ -10,8 +10,6 @@ export default function ChatHeader() {
 
   if (!selectedUser) return null;
 
-  console.log('Online users:', onlineUsers, 'Selected user:', selectedUser._id);
-  
   const isOnline = Array.isArray(onlineUsers) && onlineUsers.some(id => String(id) === String(selectedUser._id));
 
   return (
@@ -28,7 +26,7 @@ export default function ChatHeader() {
           </svg>
         </button>
         <img
-          src={selectedUser.profilePicture || defaultProfile}
+          src={selectedUser.profilePictureUrl || defaultProfile}
           alt={selectedUser.username}
           className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg"
         />

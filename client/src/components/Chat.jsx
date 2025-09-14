@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUsers } from '../services/chat';
+import { connectSocket } from '../store/authSlice';
 import Sidebar from './Chat/Sidebar';
 import Users from './Chat/Users';
 import ChatContainer from './Chat/ChatContainer';
@@ -9,6 +10,7 @@ export default function Chat() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
+  const users = useSelector((state) => state.chat.users);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
@@ -22,9 +24,12 @@ export default function Chat() {
 
   useEffect(() => {
     if (user) {
-      getUsers(dispatch);
+      if (!users || users.length === 0) {
+        getUsers(dispatch);
+      }
+      dispatch(connectSocket(user._id || user.id));
     }
-  }, [user, dispatch]);
+  }, [user, dispatch, users]);
 
   return (
     <div className="flex min-h-screen h-screen w-screen bg-gradient-to-br from-purple-800 via-indigo-900 to-pink-700 overflow-hidden">

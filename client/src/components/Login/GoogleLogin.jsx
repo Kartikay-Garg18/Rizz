@@ -23,7 +23,6 @@ const GoogleLogin = () => {
                 getUsers(dispatch)
             }
         } catch (error) {
-            console.error(error);
         }
     }
 

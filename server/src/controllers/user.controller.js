@@ -4,10 +4,10 @@ import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { signUpSchema, passwordValidation } from "../schemas/signup.schema.js";
 import { loginSchema } from "../schemas/login.schema.js";
-import { GoogleUser } from "../models/googleuser.model.js";
 import { oauth2Client } from "../utils/googleConfig.js";
 import axios from "axios";
 import { Resend } from "resend";
+import { upload } from "../utils/cloudinary.js";
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -36,7 +36,12 @@ const createUser = asyncHandler(async (req, res) => {
       .json(new ApiResponse(400, "", "User with same email address exists"));
   }
 
-  const user = await User.create({ username, email, password });
+  const user = await User.create({ 
+    username, 
+    email, 
+    password, 
+    authProvider: 'local' 
+  });
 
   if (!user) {
     return res
@@ -76,10 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
       .json(new ApiResponse(400, "", "Invalid credentials"));
   }
 
-  const { accessToken, refreshToken } = await generateToken(
-    checkUser._id,
-    User
-  );
+  const { accessToken, refreshToken } = await generateToken(checkUser._id);
 
   if (!accessToken || !refreshToken) {
     return res
@@ -98,6 +100,8 @@ const loginUser = asyncHandler(async (req, res) => {
     email: checkUser.email,
     username: checkUser.username,
     profilePictureUrl: checkUser.profilePictureUrl,
+    about: checkUser.about,
+    authProvider: checkUser.authProvider,
   };
 
   return res
@@ -119,27 +123,23 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-const generateToken = async (id, db) => {
+const generateToken = async (id) => {
   try {
-    const user = await db.findById(id);
+    const user = await User.findById(id);
     if (!user) {
-      return res.status(500).json(new ApiResponse(500, "", "User not found"));
+      throw new Error("User not found");
     }
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
     if (!accessToken || !refreshToken) {
-      return res
-        .status(500)
-        .json(new ApiResponse(500, "", "Token generation failed"));
+      throw new Error("Token generation failed");
     }
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
-    return res
-      .status(500)
-      .json(new ApiResponse(500, "", "Token generation failed"));
+    throw new Error("Token generation failed");
   }
 };
 
@@ -151,6 +151,8 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     email: checkUser.email,
     username: checkUser.username,
     profilePictureUrl: checkUser.profilePictureUrl,
+    about: checkUser.about,
+    authProvider: checkUser.authProvider,
   };
   return res
     .status(200)
@@ -164,24 +166,38 @@ const googleLoginUser = asyncHandler(async (req, res) => {
   const userData = await axios.get(
     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${googleResponse.tokens.access_token}`
   );
-  const { email, name, picture } = userData.data;
-  let user = await GoogleUser.findOne({ email });
+  const { email, name, picture, sub: googleId } = userData.data;
+  
+  let user = await User.findOne({ 
+    $or: [
+      { email: email },
+      { googleId: googleId }
+    ]
+  });
+  
   if (!user) {
-    user = await GoogleUser.create({
+    user = await User.create({
       username: name,
       email: email,
       profilePictureUrl: picture,
+      authProvider: 'google',
+      googleId: googleId,
     });
     if (!user) {
       return res
         .status(500)
         .json(new ApiResponse(500, "", "User could not be created"));
     }
+  } else if (user.authProvider === 'local') {
+    user.authProvider = 'google';
+    user.googleId = googleId;
+    if (picture && !user.profilePictureUrl) {
+      user.profilePictureUrl = picture;
+    }
+    await user.save();
   }
-  const { accessToken, refreshToken } = await generateToken(
-    user._id,
-    GoogleUser
-  );
+  
+  const { accessToken, refreshToken } = await generateToken(user._id);
 
   if (!accessToken || !refreshToken) {
     return res
@@ -198,8 +214,10 @@ const googleLoginUser = asyncHandler(async (req, res) => {
     _id: user._id,
     id: user._id,
     email: email,
-    username: name,
-    profilePictureUrl: picture,
+    username: user.username,
+    profilePictureUrl: user.profilePictureUrl,
+    about: user.about,
+    authProvider: user.authProvider,
   };
 
   return res
@@ -285,6 +303,80 @@ const resetPassword = asyncHandler(async (req, res) => {
     }
 });
 
+const updateProfile = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { username, about } = req.body;
+        
+        const updateData = {};
+        
+        if (username) {
+            const existingUser = await User.findOne({ 
+                username, 
+                _id: { $ne: userId } 
+            });
+            
+            if (existingUser) {
+                return res.status(400).json(
+                    new ApiResponse(400, "", "Username already exists")
+                );
+            }
+            updateData.username = username;
+        }
+        
+        if (about !== undefined) {
+            updateData.about = about;
+        }
+        
+        if (req.file) {
+            try {
+                const cloudinaryResponse = await upload(req.file.path);
+                if (cloudinaryResponse) {
+                    updateData.profilePictureUrl = cloudinaryResponse.secure_url;
+                } else {
+                    return res.status(500).json(
+                        new ApiResponse(500, "", "Failed to upload profile picture")
+                    );
+                }
+            } catch (error) {
+                return res.status(500).json(
+                    new ApiResponse(500, "", "Failed to upload profile picture")
+                );
+            }
+        }
+        
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password -refreshToken');
+        
+        if (!updatedUser) {
+            return res.status(404).json(
+                new ApiResponse(404, "", "User not found")
+            );
+        }
+        
+        const responseUser = {
+            _id: updatedUser._id,
+            id: updatedUser._id,
+            email: updatedUser.email,
+            username: updatedUser.username,
+            profilePictureUrl: updatedUser.profilePictureUrl,
+            about: updatedUser.about,
+        };
+        
+        return res.status(200).json(
+            new ApiResponse(200, responseUser, "Profile updated successfully")
+        );
+        
+    } catch (error) {
+        return res.status(500).json(
+            new ApiResponse(500, "", "Profile could not be updated")
+        );
+    }
+});
+
 export {
   createUser,
   loginUser,
@@ -293,4 +385,5 @@ export {
   googleLoginUser,
   forgotPassword,
   resetPassword,
+  updateProfile,
 };

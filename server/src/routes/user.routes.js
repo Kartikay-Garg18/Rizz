@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { createUser, getCurrentUser, loginUser, googleLoginUser, forgotPassword, resetPassword } from "../controllers/user.controller.js";
+import { createUser, getCurrentUser, loginUser, googleLoginUser, forgotPassword, resetPassword, updateProfile } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 const router = Router()
 
 router.route('/register').post(createUser);
@@ -8,6 +9,8 @@ router.route('/register').post(createUser);
 router.route('/login').post(loginUser);
 
 router.route('/user').get(verifyJWT, getCurrentUser);
+
+router.route('/profile').patch(verifyJWT, upload.single('profilePicture'), updateProfile);
 
 router.route('/google').post(googleLoginUser)
 

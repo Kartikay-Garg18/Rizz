@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedUser } from '../../store/chatSlice';
+import defaultProfile from '../../assets/ProfilePhoto.jpg';
 
-export default function Users({ isMobile }) {
+const Users = React.memo(function Users({ isMobile }) {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.chat.users);
   const selectedUser = useSelector((state) => state.chat.selectedUser);
+  const isLoading = useSelector((state) => state.chat.loading.users);
 
   return (
     <aside className={`
@@ -18,7 +20,12 @@ export default function Users({ isMobile }) {
         Users
       </h2>
       <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-20">
-        {(users && users.length) ? users.map(user => (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <span className="ml-2 text-white">Loading users...</span>
+          </div>
+        ) : (users && users.length) ? users.map(user => (
           <button
             key={user._id}
             onClick={() => dispatch(setSelectedUser(user))}
@@ -32,7 +39,12 @@ export default function Users({ isMobile }) {
               ${isMobile ? "text-lg py-4" : ""}
             `}
           >
-            {user.username}
+            <img
+              src={user.profilePictureUrl || defaultProfile}
+              alt={user.username}
+              className="w-10 h-10 rounded-full object-cover border-2 border-white/20 mr-3 flex-shrink-0"
+            />
+            <span className="truncate">{user.username}</span>
           </button>
         )) : (
           <p className="text-center text-indigo-200 pt-8">No users found.</p>
@@ -40,4 +52,6 @@ export default function Users({ isMobile }) {
       </div>
     </aside>
   );
-}
+});
+
+export default Users;

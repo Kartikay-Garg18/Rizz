@@ -53,10 +53,15 @@ export default function ChatInput() {
       const message = { text: text.trim(), images };
       const sentMessage = await sendMessage(selectedUser._id, message);
       
-      dispatch(updateMessage({ tempId, finalMessage: sentMessage }));
+      const finalMessage = {
+        ...sentMessage,
+        senderId: String(sentMessage.senderId),
+        receiverId: String(sentMessage.receiverId)
+      };
+      
+      dispatch(updateMessage({ tempId, finalMessage }));
       
     } catch (error) {
-      // Handle the failed message state silently or display a user-friendly error
     }
   };
 

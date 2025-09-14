@@ -3,12 +3,14 @@ import ChatHeader from './ChatHeader';
 import ChatInput from './ChatInput';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMessages } from '../../services/chat';
-import { setMessagesForUser, addMessage } from '../../store/chatSlice';
+import { setMessagesForUser, setMessagesLoading, addMessage } from '../../store/chatSlice';
+import defaultProfile from '../../assets/ProfilePhoto.jpg';
 
 export default function ChatContainer() {
   const dispatch = useDispatch();
   const selectedUser = useSelector(state => state.chat.selectedUser);
   const currentUser = useSelector(state => state.auth.user);
+  const isLoadingMessages = useSelector(state => state.chat.loading.messages);
   
   const normalizedCurrentUser = currentUser ? {
     ...currentUser,
@@ -23,10 +25,14 @@ export default function ChatContainer() {
 
   useEffect(() => {
     if (!selectedUser) return;
-    getMessages(selectedUser._id).then(msgs => {
-      dispatch(setMessagesForUser({ userId: selectedUser._id, messages: msgs }));
-    });
-  }, [selectedUser, dispatch]);
+    
+    if (!messagesByUser[selectedUser._id]) {
+      dispatch(setMessagesLoading(true));
+      getMessages(selectedUser._id).then(msgs => {
+        dispatch(setMessagesForUser({ userId: selectedUser._id, messages: msgs }));
+      });
+    }
+  }, [selectedUser, dispatch, messagesByUser]);
   
   useEffect(() => {
     const socket = window.socket;
@@ -40,37 +46,33 @@ export default function ChatContainer() {
         
         if (selectedUserId && message._id) {
           const isRelevantToCurrentChat = 
-              msgSenderId === selectedUserId || msgReceiverId === selectedUserId;
+              (msgSenderId === currentUserId && msgReceiverId === selectedUserId) ||
+              (msgSenderId === selectedUserId && msgReceiverId === currentUserId);
               
           if (isRelevantToCurrentChat) {
             const isFromCurrentUser = msgSenderId === currentUserId;
             
-            if (isFromCurrentUser) {
+            if (!isFromCurrentUser) {
               const existingMessage = messages.find(m => 
-                m._id === message._id || 
-                (m.text === message.text && 
-                 new Date(m.createdAt).getTime() > new Date().getTime() - 60000)
+                String(m._id) === String(message._id)
               );
               
               if (!existingMessage) {
                 dispatch(addMessage(message));
               }
-            } else {
-              dispatch(addMessage(message));
             }
           }
         }
       };
       
       socket.off('newMessage');
-      
       socket.on('newMessage', handleNewMessage);
       
       return () => {
         socket.off('newMessage', handleNewMessage);
       };
     }
-  }, [selectedUser, dispatch, normalizedCurrentUser]);
+  }, [selectedUser, dispatch, normalizedCurrentUser, messages]);
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -88,17 +90,37 @@ export default function ChatContainer() {
         </div>
         
         <div className="flex-1 overflow-y-auto max-h-[calc(100vh-140px)] pb-4 px-2 md:px-6 space-y-2 overscroll-contain">
-          {messages.length === 0 ? (
+          {isLoadingMessages ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+              <span className="ml-2 text-white">Loading messages...</span>
+            </div>
+          ) : messages.length === 0 ? (
             <p className="text-indigo-100 text-center my-20">No messages yet. Start the conversation!</p>
           ) : (
             messages.map((msg, idx) => {
               const isOwn = normalizedCurrentUser ? String(msg.senderId) === String(normalizedCurrentUser._id) : false;
+              
+              let senderProfilePic;
+              if (isOwn) {
+                senderProfilePic = normalizedCurrentUser?.profilePictureUrl;
+              } else {
+                senderProfilePic = selectedUser?.profilePictureUrl;
+              }
+              
               return (
                 <div
                   key={msg._id || idx}
                   ref={idx === messages.length - 1 ? lastMessageRef : null}
-                  className={`flex ${isOwn ? "justify-end" : "justify-start"} w-full mb-1.5`}
+                  className={`flex ${isOwn ? "justify-end" : "justify-start"} w-full mb-1.5 items-end space-x-2`}
                 >
+                  {!isOwn && (
+                    <img
+                      src={senderProfilePic || defaultProfile}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover border border-white/20 flex-shrink-0"
+                    />
+                  )}
                   <div
                     className={`inline-block max-w-[45%] md:max-w-[40%] px-3 py-2 rounded-2xl break-words hyphens-auto
                       ${isOwn 
@@ -110,17 +132,32 @@ export default function ChatContainer() {
                     {msg.images && msg.images.length > 0 && (
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
                         {msg.images.map((img, i) => (
-                          <img
-                            key={i}
-                            src={img.url || img}
-                            alt=""
-                            onClick={() => setModalImage(img.url || img)}
-                            className="w-16 h-16 object-cover rounded-lg border border-white/20 shadow cursor-pointer transition-transform hover:scale-105"
-                          />
+                          <div key={i} className="relative">
+                            <img
+                              src={img.url || img}
+                              alt=""
+                              onClick={() => !img.isUploading && setModalImage(img.url || img)}
+                              className={`w-16 h-16 object-cover rounded-lg border border-white/20 shadow transition-transform hover:scale-105 ${
+                                img.isUploading ? 'cursor-default opacity-70' : 'cursor-pointer'
+                              }`}
+                            />
+                            {img.isUploading && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
+                                <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
                   </div>
+                  {isOwn && (
+                    <img
+                      src={senderProfilePic || defaultProfile}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover border border-white/20 flex-shrink-0"
+                    />
+                  )}
                 </div>
               );
             })

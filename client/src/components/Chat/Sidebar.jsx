@@ -1,7 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isMobile, showInMobile }) => {
+  const location = useLocation();
   const cl = "my-3 w-10 cursor-pointer hover:opacity-80 transition-all hover:scale-110";
   
   const navItems = [
@@ -9,17 +10,19 @@ const Sidebar = ({ isMobile, showInMobile }) => {
       to: "/chat",
       icon: "https://img.icons8.com/?size=100&id=118377&format=png&color=FFFFFF",
       alt: "Messages",
-      active: true
+      isActive: location.pathname === "/chat"
     },
     {
       to: "/chat/calling",
       icon: "https://img.icons8.com/?size=100&id=vfXAPwB00Ntn&format=png&color=FFFFFF",
-      alt: "Calls"
+      alt: "Calls",
+      isActive: location.pathname === "/chat/calling"
     },
     {
       to: "/chat/setting",
       icon: "https://img.icons8.com/?size=100&id=364&format=png&color=FFFFFF",
-      alt: "Settings"
+      alt: "Settings",
+      isActive: location.pathname === "/chat/setting"
     }
   ];
   
@@ -41,9 +44,9 @@ const Sidebar = ({ isMobile, showInMobile }) => {
           <img 
             src={item.icon} 
             alt={item.alt} 
-            className={`${cl} ${item.active ? 'drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : ''}`} 
+            className={`${cl} ${item.isActive ? 'drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : ''}`} 
           />
-          {item.active && (
+          {item.isActive && (
             <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-pink-400 rounded-full"></span>
           )}
         </Link>

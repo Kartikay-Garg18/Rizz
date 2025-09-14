@@ -30,7 +30,6 @@ export default function LoginForm() {
       dispatch(connectSocket());
       getUsers(dispatch);
     } catch (e) {
-      console.error(e);
     }
   };
 

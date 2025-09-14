@@ -36,7 +36,6 @@ export function SignUpForm() {
       navigate('/login');
       
     } catch (error) {
-      console.log(error)
     }
   }
   return (

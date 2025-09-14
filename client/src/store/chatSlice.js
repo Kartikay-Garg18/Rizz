@@ -4,6 +4,10 @@ const initialState = {
   users: [],
   selectedUser: null,
   messagesByUser: {},
+  loading: {
+    users: false,
+    messages: false,
+  },
 }
 
 const chatSlice = createSlice({
@@ -12,13 +16,21 @@ const chatSlice = createSlice({
   reducers: {
     setUsers(state, action) {
       state.users = action.payload
+      state.loading.users = false
+    },
+    setUsersLoading(state, action) {
+      state.loading.users = action.payload
     },
     setSelectedUser(state, action) {
       state.selectedUser = action.payload
     },
+    setMessagesLoading(state, action) {
+      state.loading.messages = action.payload
+    },
     setMessagesForUser(state, action) {
       const { userId, messages } = action.payload
       state.messagesByUser[userId] = messages
+      state.loading.messages = false
     },
     addMessage(state, action) {
       const message = action.payload;
@@ -28,14 +40,18 @@ const chatSlice = createSlice({
       
       let chatUserId;
       
-      const allUserIds = Object.keys(state.messagesByUser);
-      
-      if (allUserIds.includes(senderId)) {
-        chatUserId = senderId;
-      } else if (allUserIds.includes(receiverId)) {
-        chatUserId = receiverId;
+      if (state.selectedUser) {
+        chatUserId = String(state.selectedUser._id);
       } else {
-        chatUserId = senderId;
+        const allUserIds = Object.keys(state.messagesByUser);
+        
+        if (allUserIds.includes(receiverId)) {
+          chatUserId = receiverId;
+        } else if (allUserIds.includes(senderId)) {
+          chatUserId = senderId;
+        } else {
+          chatUserId = receiverId;
+        }
       }
 
       if (!state.messagesByUser[chatUserId]) {
@@ -44,12 +60,6 @@ const chatSlice = createSlice({
       
       const isDuplicate = state.messagesByUser[chatUserId].some(m => {
         if (m._id && message._id && String(m._id) === String(message._id)) {
-          return true;
-        }
-        
-        if (m.text === message.text && 
-            String(m.senderId) === String(message.senderId) &&
-            Math.abs(new Date(m.createdAt) - new Date(message.createdAt)) < 10000) {
           return true;
         }
         
@@ -62,18 +72,34 @@ const chatSlice = createSlice({
     },
     updateMessage(state, action) {
       const { tempId, finalMessage } = action.payload;
-      const recipientId = finalMessage.receiverId;
+      
+      let chatUserId;
+      if (state.selectedUser) {
+        chatUserId = String(state.selectedUser._id);
+      } else {
+        chatUserId = String(finalMessage.receiverId);
+      }
 
-      if (state.messagesByUser[recipientId]) {
-        const messageIndex = state.messagesByUser[recipientId].findIndex(m => m._id === tempId);
+      if (state.messagesByUser[chatUserId]) {
+        const messageIndex = state.messagesByUser[chatUserId].findIndex(m => String(m._id) === String(tempId));
         if (messageIndex !== -1) {
-          state.messagesByUser[recipientId][messageIndex] = finalMessage;
+          state.messagesByUser[chatUserId][messageIndex] = {
+            ...finalMessage,
+            senderId: String(finalMessage.senderId),
+            receiverId: String(finalMessage.receiverId)
+          };
+        } else {
+          state.messagesByUser[chatUserId].push({
+            ...finalMessage,
+            senderId: String(finalMessage.senderId),
+            receiverId: String(finalMessage.receiverId)
+          });
         }
       }
     },
   },
 });
 
-export const { setUsers, setSelectedUser, setMessagesForUser, addMessage, updateMessage } = chatSlice.actions;
+export const { setUsers, setUsersLoading, setSelectedUser, setMessagesLoading, setMessagesForUser, addMessage, updateMessage } = chatSlice.actions;
 
 export default chatSlice.reducer

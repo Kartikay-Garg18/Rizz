@@ -29,6 +29,11 @@ const authSlice = createSlice({
                 socket = null;
             }
         },
+        updateUser: (state, action) => {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
+        },
         setOnlineUsers: (state, action) => {
             state.onlineUsers = action.payload;
         }
@@ -56,7 +61,6 @@ export const connectSocket = (userId) => (dispatch, getState) => {
     window.socket = socket;
 
     socket.on('connect', () => {
-        console.log('Socket connected');
     });
 
     socket.on('disconnect', (reason) => {
@@ -66,7 +70,6 @@ export const connectSocket = (userId) => (dispatch, getState) => {
     });
 
     socket.on('connect_error', () => {
-        console.error('Socket connection error');
     });
 
     socket.on('onlineUsers', (users) => {
@@ -90,5 +93,5 @@ export const disconnectSocket = () => (dispatch) => {
 
 export const getSocket = () => socket;
 
-export const { login, logout, setOnlineUsers } = authSlice.actions;
+export const { login, logout, updateUser, setOnlineUsers } = authSlice.actions;
 export default authSlice.reducer;
