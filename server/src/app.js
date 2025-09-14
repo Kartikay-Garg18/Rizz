@@ -6,7 +6,7 @@ import cors from 'cors'
 import {app} from './utils/socket.js'
 
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN || "https://rizz-frontend-two.vercel.app",
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
@@ -19,6 +19,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(express.static('public'))
+
+app.set('trust proxy', 1)
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
